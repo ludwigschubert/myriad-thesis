@@ -13,7 +13,7 @@ branches:
 after_success:
 - "travis-artifacts upload --path main.pdf"
 - "mv main.pdf bt-ludwigschubert.pdf"
-- "travis-artifacts upload --target-path --path bt-ludwigschubert.pdf"
+- "travis-artifacts upload --target-path ./ --path bt-ludwigschubert.pdf"
 env:
   global:
   - ARTIFACTS_AWS_REGION=eu-west-1
