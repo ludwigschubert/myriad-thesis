@@ -1,4 +1,5 @@
 install:
+  - sudo add-apt-repository ppa:texlive-backports/ppa
   - sudo apt-get update
   - sudo apt-get install texlive --fix-missing
 
