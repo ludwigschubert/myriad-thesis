@@ -1,0 +1,11 @@
+install:
+	- sudo apt-get install texlive-full
+
+script: "make"
+
+notifications:
+	- email: true
+
+branches:
+	only:
+		- master
