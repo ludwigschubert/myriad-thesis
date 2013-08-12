@@ -1,5 +1,16 @@
 % Included by MAIN.TEX
 
+\documentclass[11pt,a4paper,bibtotoc,idxtotoc,headsepline,footsepline,footexclude,BCOR12mm,DIV13,parskip=full]{scrbook}
+
+%\documentclass[11pt,a4paper,bibtotoc,idxtotoc,headsepline,footsepline,footexclude,BCOR20mm,DIV10]{scrbook}
+
+% KOMA-Optionen:
+%  bibtotoc: include bibliography in table of contents
+%  idxtotoc: include index in table of contents
+%  headsepline: use horizontalline under heading
+%  BCOR: binding correcion (Bindungskorrektur) (e.g.: BCOR5mm)
+%  DIV: Number of sheet sections (used for layout) (e.g.: DIV12)
+
 \renewcommand{\sectfont}{\normalfont \bfseries}        % Schriftart der Kopfzeile
 
 % manipulate footer
@@ -8,6 +19,8 @@
 \ifoot[\footertext]{\footertext} % \footertext set in INFO.TEX
 %\setkomafont{pagehead}{\normalfont\rmfamily}
 \setkomafont{pagenumber}{\normalfont\rmfamily}
+
+\linespread{1.2}
 
 %% allow sophisticated control structures
 \usepackage{ifthen}

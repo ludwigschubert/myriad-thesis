@@ -7,7 +7,7 @@ To-Do
 =====
 
 * CI
-    * Add conversion to HTML
-    * Check-in artifacts as gh-pages branch
+    * --Add conversion to HTML--
+    * --Check-in artifacts as gh-pages branch--
 * Bibliography
     * More Entries

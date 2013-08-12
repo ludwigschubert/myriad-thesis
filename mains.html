@@ -1,0 +1,492 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><HTML>
+<HEAD>
+<TITLE></TITLE>
+</HEAD>
+<BODY>
+<A name=1></a>FAKULT ¨<br>
+AT F ¨<br>
+UR INFORMATIK<br>
+DER TECHNISCHEN UNIVERSIT ¨<br>
+AT M ¨<br>
+UNCHEN<br>
+Bachelorarbeit in Informatik<br>
+Myriad ­ a mailmerge tool for massive<br>
+parallel, yet individual email conversations<br>
+Ludwig Schubert<br>
+<hr>
+<A name=2></a><hr>
+<A name=3></a>FAKULT ¨<br>
+AT F ¨<br>
+UR INFORMATIK<br>
+DER TECHNISCHEN UNIVERSIT ¨<br>
+AT M ¨<br>
+UNCHEN<br>
+Bachelorarbeit in Informatik<br>
+Myriad ­ a mailmerge tool for massive parallel, yet<br>
+individual email conversations<br>
+Myriad ­ ein Serienbrief Email-Tool f ¨ur hochgradig<br>
+parallele, jedoch individualisierte Emailkonversationen<br>
+Author:<br>
+Ludwig Schubert<br>
+Supervisor: Prof. Dr. Johann Schlichter<br>
+Advisor:<br>
+Dr. Wolfgang W ¨orndl<br>
+Date:<br>
+September 30, 2013<br>
+<hr>
+<A name=4></a><hr>
+<A name=5></a>Ich versichere, dass ich diese Bachelorarbeit selbst¨andig verfasst und nur die angegebenen<br>
+Quellen und Hilfsmittel verwendet habe.<br>
+M ¨unchen, den 30. September 2013<br>
+Ludwig Schubert<br>
+<hr>
+<A name=6></a><hr>
+<A name=7></a>Abstract<br>
+This thesis introduces the myriad system for email mass communication.<br>
+Despite it's age, Email has remained the prevalent form of electronic communication, it's<br>
+usage being wildly different from how it was imagined. The tools to handle it, however,<br>
+are still stuck in their original UI metaphors.<br>
+Myriad aims at producing personalized communication on a comparable level to manually<br>
+composed messages, while reducing user effort. A cross-over of mailmerge and customer<br>
+support/helpdesk software, it enables managing big volumes of bidirectional email-based<br>
+communication. It is based on a self-developed framework for separating information<br>
+extraction, decision- making, and personalization steps in communication.<br>
+The myriad system consists of a server component that handles interfacing with email<br>
+servers, a core logic system and a web frontend for users.<br>
+It can be tested at <A href="http://myriad.ludwigschubert.de">http://myriad.ludwigschubert.de.</a><br>
+Keywords<br>
+Email, Workflow, Helpdesk, Mailmerge, Crowdsourcing, Personalized Communication,<br>
+Assisted Templating, Generated Documents, Web-Application<br>
+vii<br>
+<hr>
+<A name=8></a><hr>
+<A name=9></a>Acknowledgements<br>
+This thesis is based on research conducted from October 2012 through April 2013 together<br>
+with <A href="mailto:ikas@in.tum.de">Christian Ikas, </a><A href="mailto:boztop@gmail.com">Baris¸ ¨</a><br>
+<A href="mailto:boztop@gmail.com">Oztop </a>and <A href="mailto:nicolas@cs.stanford.edu">Nicolas Kokkalis </a>under the guidance of Prof. Michael<br>
+S. Bernstein and Prof. Scott R. Klemmer during a stay at Stanford University's <A href="http://hci.stanford.edu">Human Com-</a><br>
+<A href="http://hci.stanford.edu">puter Interaction Department.</a><br>
+The research stay was partly financed by <A href="https://www.elitenetzwerk.bayern.de">Elitenetzwerk Bayern </a>through a grant to the<br>
+study program Technology Management at the <A href="http://www.cdtm.de">Center for Digital Technology and Manage-</a><br>
+<A href="http://www.cdtm.de">ment.</a><br>
+ix<br>
+<hr>
+<A name=10></a><hr>
+<A name=11></a>Contents<br>
+<A href="mains.html#1">Disclaimer</a><br>
+v<br>
+<A href="mains.html#7">Abstract</a><br>
+vii<br>
+<A href="mains.html#9">Acknowledgements</a><br>
+ix<br>
+<A href="mains.html#11">Table of Contents</a><br>
+xi<br>
+<A href="mains.html#15">Main Matter</a><br>
+3<br>
+<A href="mains.html#17">1. Introduction</a><br>
+3<br>
+<A href="mains.html#17">1.1. Motivation </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+3<br>
+<A href="mains.html#17">1.2. Goals and Background </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+3<br>
+<A href="mains.html#17">1.3. Outline </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+3<br>
+<A href="mains.html#19">2. Technical Backgrounds</a><br>
+5<br>
+<A href="mains.html#19">2.1. Web Applications </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+5<br>
+<A href="mains.html#19">2.1.1. Why build a web application instead of a native one? </a>. . . . . . . . .<br>
+5<br>
+<A href="mains.html#19">2.1.2. Main Components of a Web Application </a>. . . . . . . . . . . . . . . .<br>
+5<br>
+<A href="mains.html#19">2.1.3. Rails and Ruby </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+5<br>
+<A href="mains.html#19">2.2. Email Systems </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+5<br>
+<A href="mains.html#19">2.2.1. Working with RFC 2822 </a>. . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+5<br>
+<A href="mains.html#19">2.2.2. IMAP and SMTP </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+5<br>
+<A href="mains.html#19">2.3. Workflow Systems </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+5<br>
+<A href="mains.html#19">2.3.1. History of Workflow Systems </a>. . . . . . . . . . . . . . . . . . . . . . .<br>
+5<br>
+<A href="mains.html#19">2.3.2. Famous Examples </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+5<br>
+<A href="mains.html#21">3. Comparison with similar systems</a><br>
+7<br>
+<A href="mains.html#21">3.1. Mailmerge Systems </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+7<br>
+<A href="mains.html#21">3.1.1. CRM Systems </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+7<br>
+<A href="mains.html#21">3.1.2. Dedicated Mailmerge Systems </a>. . . . . . . . . . . . . . . . . . . . . .<br>
+7<br>
+xi<br>
+<hr>
+<A name=12></a>Contents<br>
+<A href="mains.html#21">3.1.3. Backend Services </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+7<br>
+<A href="mains.html#21">Amazon SES </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+7<br>
+<A href="mains.html#21">SendGrid </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+7<br>
+<A href="mains.html#21">3.2. Customer Support Systems </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+7<br>
+<A href="mains.html#23">4. Concept</a><br>
+9<br>
+<A href="mains.html#24">4.1. Functional Analysis </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+10<br>
+<A href="mains.html#24">4.2. Product Functions </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+10<br>
+<A href="mains.html#24">4.3. User Interface </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+10<br>
+<A href="mains.html#24">4.3.1. Prototyping Approaches </a>. . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+10<br>
+<A href="mains.html#24">4.4. Technical Analysis </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+10<br>
+<A href="mains.html#24">4.4.1. Runtime Environment </a>. . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+10<br>
+<A href="mains.html#24">4.4.2. Server Software Stack </a>. . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+10<br>
+<A href="mains.html#24">4.4.3. Client Side </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+10<br>
+<A href="mains.html#24">4.4.4. Backend Service Connections </a>. . . . . . . . . . . . . . . . . . . . . . .<br>
+10<br>
+<A href="mains.html#24">Google Mail </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+10<br>
+<A href="mains.html#24">Google Docs </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+10<br>
+<A href="mains.html#24">4.5. System Design </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+10<br>
+<A href="mains.html#24">4.5.1. Database Schema </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+10<br>
+<A href="mains.html#24">Unusual Patterns </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+10<br>
+<A href="mains.html#24">4.5.2. Distribution of System Components </a>. . . . . . . . . . . . . . . . . . .<br>
+10<br>
+<A href="mains.html#25">5. Implementation</a><br>
+11<br>
+<A href="mains.html#26">5.1. Preparation and Tools </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+12<br>
+<A href="mains.html#26">5.1.1. Development Environment </a>. . . . . . . . . . . . . . . . . . . . . . . .<br>
+12<br>
+<A href="mains.html#26">5.1.2. Collaborative Development </a>. . . . . . . . . . . . . . . . . . . . . . . .<br>
+12<br>
+<A href="mains.html#26">git, gitflow and Github</a><br>
+. . . . . . . . . . . . . . . . . . . . . . . .<br>
+12<br>
+<A href="mains.html#26">5.1.3. Deployment </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+12<br>
+<A href="mains.html#26">Deployment Tool Capistrano </a>. . . . . . . . . . . . . . . . . . . . . .<br>
+12<br>
+<A href="mains.html#26">5.2. Server Component </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+12<br>
+<A href="mains.html#26">5.2.1. Core Classes and their Interaction </a>. . . . . . . . . . . . . . . . . . . .<br>
+12<br>
+<A href="mains.html#26">Contact </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+12<br>
+<A href="mains.html#26">Template </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+12<br>
+<A href="mains.html#26">Email </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+12<br>
+<A href="mains.html#26">Campaign </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+12<br>
+<A href="mains.html#26">Conversation </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+12<br>
+<A href="mains.html#26">Key &amp; Value</a><br>
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+12<br>
+<A href="mains.html#26">Search &amp; KeyBinding </a>. . . . . . . . . . . . . . . . . . . . . . . . .<br>
+12<br>
+<A href="mains.html#26">Notification </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+12<br>
+xii<br>
+<hr>
+<A name=13></a>Contents<br>
+<A href="mains.html#26">5.2.2. Workers and their Jobs </a>. . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+12<br>
+<A href="mains.html#26">5.2.3. Maintenance and Rake Tasks </a>. . . . . . . . . . . . . . . . . . . . . . .<br>
+12<br>
+<A href="mains.html#26">5.3. Backend Services Connection </a>. . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+12<br>
+<A href="mains.html#26">5.3.1. Email Fetching </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+12<br>
+<A href="mains.html#26">IMAP IDLEing </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+12<br>
+<A href="mains.html#26">5.3.2. Google Docs Syncing </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+12<br>
+<A href="mains.html#26">5.4. "Best Practices" </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+12<br>
+<A href="mains.html#26">5.4.1. Core Extensions </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+12<br>
+<A href="mains.html#26">5.4.2. Lean Workers with AbstractWorker </a>. . . . . . . . . . . . . . . . . . .<br>
+12<br>
+<A href="mains.html#26">5.4.3. Monitoring Services </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+12<br>
+<A href="mains.html#27">6. Evaluation</a><br>
+13<br>
+<A href="mains.html#27">6.1. Comparison with Initial Goals </a>. . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+13<br>
+<A href="mains.html#27">6.2. Observed Use Cases </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+13<br>
+<A href="mains.html#27">6.2.1. Recruiting Exchange Students for one of the Most Desired Universi-</a><br>
+<A href="mains.html#27">ties of the World </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+13<br>
+<A href="mains.html#27">6.2.2. Requesting paper Reviews for a Journal </a>. . . . . . . . . . . . . . . . .<br>
+13<br>
+<A href="mains.html#27">6.2.3. Managing Incoming Class Administration Emails </a>. . . . . . . . . . .<br>
+13<br>
+<A href="mains.html#29">7. Conclusion</a><br>
+15<br>
+<A href="mains.html#29">7.1. Conclusion of this work </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+15<br>
+<A href="mains.html#29">7.2. Discussion of results </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+15<br>
+<A href="mains.html#29">7.3. Future Work </a>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .<br>
+15<br>
+<A href="mains.html#31">Bibliography</a><br>
+17<br>
+<A href="mains.html#33">List of Figures</a><br>
+19<br>
+<A href="mains.html#35">Appendix</a><br>
+23<br>
+<A href="mains.html#37">A. Detailed Descriptions</a><br>
+23<br>
+<A href="mains.html#39">B. Colophon</a><br>
+25<br>
+xiii<br>
+<hr>
+<A name=14></a><hr>
+<A name=15></a>Main Matter<br>
+1<br>
+<hr>
+<A name=16></a><hr>
+<A name=17></a>1. Introduction<br>
+This is the introduction.<br>
+1.1. Motivation<br>
+1.2. Goals and Background<br>
+1.3. Outline<br>
+Hallo Latex: <A href="mains.html#31">[1] </a>Danke Latex!<br>
+3<br>
+<hr>
+<A name=18></a>1. Introduction<br>
+4<br>
+<hr>
+<A name=19></a>2. Technical Backgrounds<br>
+2.1. Web Applications<br>
+2.1.1. Why build a web application instead of a native one?<br>
+2.1.2. Main Components of a Web Application<br>
+2.1.3. Rails and Ruby<br>
+2.2. Email Systems<br>
+2.2.1. Working with RFC 2822<br>
+2.2.2. IMAP and SMTP<br>
+2.3. Workflow Systems<br>
+2.3.1. History of Workflow Systems<br>
+2.3.2. Famous Examples<br>
+5<br>
+<hr>
+<A name=20></a>2. Technical Backgrounds<br>
+6<br>
+<hr>
+<A name=21></a>3. Comparison with similar systems<br>
+3.1. Mailmerge Systems<br>
+3.1.1. CRM Systems<br>
+3.1.2. Dedicated Mailmerge Systems<br>
+3.1.3. Backend Services<br>
+Amazon SES<br>
+SendGrid<br>
+3.2. Customer Support Systems<br>
+7<br>
+<hr>
+<A name=22></a>3. Comparison with similar systems<br>
+8<br>
+<hr>
+<A name=23></a>9<br>
+<hr>
+<A name=24></a>4. Concept<br>
+4. Concept<br>
+4.1. Functional Analysis<br>
+4.2. Product Functions<br>
+4.3. User Interface<br>
+4.3.1. Prototyping Approaches<br>
+4.4. Technical Analysis<br>
+4.4.1. Runtime Environment<br>
+4.4.2. Server Software Stack<br>
+4.4.3. Client Side<br>
+4.4.4. Backend Service Connections<br>
+Google Mail<br>
+Google Docs<br>
+4.5. System Design<br>
+10<br>
+4.5.1. Database Schema<br>
+Unusual Patterns<br>
+4.5.2. Distribution of System Components<br>
+<hr>
+<A name=25></a>11<br>
+<hr>
+<A name=26></a>5. Implementation<br>
+5. Implementation<br>
+5.1. Preparation and Tools<br>
+5.1.1. Development Environment<br>
+5.1.2. Collaborative Development<br>
+git, gitflow and Github<br>
+5.1.3. Deployment<br>
+Deployment Tool Capistrano<br>
+5.2. Server Component<br>
+5.2.1. Core Classes and their Interaction<br>
+Contact<br>
+Template<br>
+Email<br>
+Campaign<br>
+Conversation<br>
+12<br>
+Key &amp; Value<br>
+Search &amp; KeyBinding<br>
+Notification<br>
+5.2.2. Workers and their Jobs<br>
+5.2.3. Maintenance and Rake Tasks<br>
+5.3. Backend Services Connection<br>
+5.3.1. Email Fetching<br>
+IMAP IDLEing<br>
+5.3.2. Google Docs Syncing<br>
+5.4. "Best Practices"<br>
+5.4.1. Core Extensions<br>
+5.4.2. Lean Workers with AbstractWorker<br>
+5.4.3. Monitoring Services<br>
+<hr>
+<A name=27></a>6. Evaluation<br>
+6.1. Comparison with Initial Goals<br>
+6.2. Observed Use Cases<br>
+6.2.1. Recruiting Exchange Students for one of the Most Desired Universities<br>
+of the World<br>
+6.2.2. Requesting paper Reviews for a Journal<br>
+6.2.3. Managing Incoming Class Administration Emails<br>
+13<br>
+<hr>
+<A name=28></a>6. Evaluation<br>
+14<br>
+<hr>
+<A name=29></a>7. Conclusion<br>
+7.1. Conclusion of this work<br>
+7.2. Discussion of results<br>
+7.3. Future Work<br>
+15<br>
+<hr>
+<A name=30></a><hr>
+<A name=31></a>Bibliography<br>
+[1] Leslie Lamport. LaTeX : A Documentation Preparation System User's Guide and Reference<br>
+Manual. Addison-Wesley Professional, 1994.<br>
+17<br>
+<hr>
+<A name=32></a><hr>
+<A name=33></a>List of Figures<br>
+19<br>
+<hr>
+<A name=34></a>List of Figures<br>
+20<br>
+<hr>
+<A name=35></a>Appendix<br>
+21<br>
+<hr>
+<A name=36></a><hr>
+<A name=37></a>A. Detailed Descriptions<br>
+Here come the details that are not supposed to be in the regular text.<br>
+23<br>
+<hr>
+<A name=38></a>A. Detailed Descriptions<br>
+24<br>
+<hr>
+<A name=39></a>B. Colophon<br>
+This thesis is set in L</span><span class="ft2">A</span><span class="ft1">TE<A href="mains.html#31">X[1], </a>build by the continuous integration server Travis.<br>
+25<br>
+<hr>
+<A name="outline"></a><h1>Document Outline</h1>
+<ul><li>Disclaimer
+<li>Abstract
+<li>Acknowledgements
+<li>Table of Contents
+<li>Main Matter
+<ul><li>Introduction
+<ul><li>Motivation
+<li>Goals and Background
+<li>Outline
+</ul><li>Technical Backgrounds
+<ul><li>Web Applications
+<ul><li>Why build a web application instead of a native one?
+<li>Main Components of a Web Application
+<li>Rails and Ruby
+</ul><li>Email Systems
+<ul><li>Working with RFC 2822
+<li>IMAP and SMTP
+</ul><li>Workflow Systems
+<ul><li>History of Workflow Systems
+<li>Famous Examples
+</ul></ul><li>Comparison with similar systems
+<ul><li>Mailmerge Systems
+<ul><li>CRM Systems
+<li>Dedicated Mailmerge Systems
+<li>Backend Services
+<ul><li>Amazon SES
+<li>SendGrid
+</ul></ul><li>Customer Support Systems
+</ul><li>Concept
+<ul><li>Functional Analysis
+<li>Product Functions
+<li>User Interface
+<ul><li>Prototyping Approaches
+</ul><li>Technical Analysis
+<ul><li>Runtime Environment
+<li>Server Software Stack
+<li>Client Side
+<li>Backend Service Connections
+<ul><li>Google Mail
+<li>Google Docs
+</ul></ul><li>System Design
+<ul><li>Database Schema
+<ul><li>Unusual Patterns
+</ul><li>Distribution of System Components
+</ul></ul><li>Implementation
+<ul><li>Preparation and Tools
+<ul><li>Development Environment
+<li>Collaborative Development
+<ul><li>git, gitflow and Github
+</ul><li>Deployment
+<ul><li>Deployment Tool Capistrano
+</ul></ul><li>Server Component
+<ul><li>Core Classes and their Interaction
+<ul><li>Contact
+<li>Template
+<li>Email
+<li>Campaign
+<li>Conversation
+<li>Key & Value
+<li>Search & KeyBinding
+<li>Notification
+</ul><li>Workers and their Jobs
+<li>Maintenance and Rake Tasks
+</ul><li>Backend Services Connection
+<ul><li>Email Fetching
+<ul><li>IMAP IDLEing
+</ul><li>Google Docs Syncing
+</ul><li>``Best Practices''
+<ul><li>Core Extensions
+<li>Lean Workers with AbstractWorker
+<li>Monitoring Services
+</ul></ul><li>Evaluation
+<ul><li>Comparison with Initial Goals
+<li>Observed Use Cases
+<ul><li>Recruiting Exchange Students for one of the Most Desired Universities of the World
+<li>Requesting paper Reviews for a Journal
+<li>Managing Incoming Class Administration Emails
+</ul></ul><li>Conclusion
+<ul><li>Conclusion of this work
+<li>Discussion of results
+<li>Future Work
+</ul><li>Bibliography
+<li>List of Figures
+</ul><li>Appendix
+<ul><li>Detailed Descriptions
+<li>Colophon
+</ul></ul><hr>
+</BODY>
+</HTML>

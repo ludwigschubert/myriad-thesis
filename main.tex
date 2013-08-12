@@ -1,48 +1,18 @@
- % The main file for CAMP reports
- % Don't put any content in here.
- % Don't even include content files by using \input or \inlcude.
- % Put your content to TEXT.TEX or include it there using \input.
- % Uses:
- %		SETTINGS.TEX	contains the settings for this document
- %		COMMANDS.TEX	contains commands which can be used while writing
- %		INFO.TEX			contains the author, title and so on for the cover
- %		COVER.TEX			formats the front cover of the document
- %		ABSTRACT.TEX	contains the abstract to be included (if needed)
- %		TEXT.TEX			contains the actual content of the document
- %		BIB.BIB				containt the BibTeX entries for the document
- 
- 
-%% Draft document mode
-%% Final document
-\documentclass[11pt,a4paper,bibtotoc,idxtotoc,headsepline,footsepline,footexclude,BCOR12mm,DIV13,parskip=full]{scrbook}
-
-%\documentclass[11pt,a4paper,bibtotoc,idxtotoc,headsepline,footsepline,footexclude,BCOR20mm,DIV10]{scrbook}
-
-% KOMA-Optionen:
-%  bibtotoc: include bibliography in table of contents
-%  idxtotoc: include index in table of contents
-%  headsepline: use horizontalline under heading
-%  BCOR: binding correcion (Bindungskorrektur) (e.g.: BCOR5mm)
-%  DIV: Number of sheet sections (used for layout) (e.g.: DIV12)
-
-
-
-% include title and author information for the cover
-\input{components/info}
-
-% include settings
 \input{components/settings}
-
-% include commands
+\input{components/info}
 \input{components/commands}
-
-\linespread{1.2}
 
 \makeglossary
 
 \begin{document}
-	   
+	
+	% ---------------------------------------------------------------------------
+	%
+	% Front Matter
+	%
+	% ---------------------------------------------------------------------------
 	\frontmatter
+	\label{part:Front}
 	
 	    \input{components/cover}
 
@@ -56,19 +26,21 @@
 
     	\input{components/acknowledgements}
 
-        \input{components/table_of_contents}
+      \input{components/table_of_contents}
   
-	\mainmatter
-	
-	
-		% ---------------------------------------------------------------------------
-		%
-		% Main Matter
-        %
-		% ---------------------------------------------------------------------------
-        \part*{Main Matter}
-        \addcontentsline{toc}{part}{Main Matter}
-        \input{chapters/introduction}
+  	
+	% ---------------------------------------------------------------------------
+	%
+	% Main Matter
+  %
+  % ---------------------------------------------------------------------------
+  \mainmatter
+  \part*{Main Matter}
+  \label{part:Main}
+  \addcontentsline{toc}{part}{Main Matter}
+
+    
+    \input{chapters/introduction}
 		\input{chapters/technical_background}
 		\input{chapters/comparison}
 		\input{chapters/concept}
@@ -80,23 +52,18 @@
 
     \input{components/table_of_figures}
 
+
 	% ---------------------------------------------------------------------------
 	%
 	% Appendix
 	%
 	% ---------------------------------------------------------------------------
+  \appendix
+  \part*{Appendix}
+  \label{part:Appendix}
+  \addcontentsline{toc}{part}{Appendix}
 
-        \part*{Appendix}
-        \addcontentsline{toc}{part}{Appendix}
-        
-
-	    \appendix %---------------------------------------
-        
-        \input{chapters/appendix}
-
-
-
-        
+    \input{chapters/appendix}
+ 
  
 \end{document}
-
