@@ -20,9 +20,10 @@
 %\setkomafont{pagehead}{\normalfont\rmfamily}
 \setkomafont{pagenumber}{\normalfont\rmfamily}
 
-\linespread{1.2}
+\linespread{1.5}
 
-%% allow sophisticated control structures
+% allow sophisticated control structures
+% TeX is Turing complete, FYI.
 \usepackage{ifthen}
 
 % use Palatino as default font
@@ -34,16 +35,46 @@
 % make thumbnails
 \usepackage{thumbpdf}
 
-%to use the subfigures
+% to use the subfigures
 \usepackage{subfigure}
 
-
+% colorful tables I guess...
 \usepackage{colortbl}
 
+% Turns \nth{3} into 3rd with proper superscript.
+\usepackage[super]{nth}
+
+% Creates n paragraphs of Lorem Ipsum blindtext via \lipsum[n]
+\usepackage{lipsum}
+
+\usepackage[dvipsnames]{xcolor}
 
 %% show program code\ldots
 %\usepackage{verbatim}
 %\usepackage{program}
+\usepackage{listings}
+
+\lstset{ %
+language=Ruby,                  % choose the language of the code
+basicstyle=\footnotesize\ttfamily,       % the size of the fonts that are used for the code
+commentstyle=\ttfamily\color{gray},
+keywordstyle=\ttfamily\color{BrickRed}\bfseries\underbar,
+stringstyle=\color{orange},
+numbers=left,                   % where to put the line-numbers
+numberstyle=\footnotesize,      % the size of the fonts that are used for the line-numbers
+stepnumber=1,                   % the step between two line-numbers. If it is 1 each line will be numbered
+numbersep=5pt,                  % how far the line-numbers are from the code
+backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+showspaces=false,               % show spaces adding particular underscores
+showstringspaces=false,         % underline spaces within strings
+showtabs=false,                 % show tabs within strings adding particular underscores
+frame=single,                   % adds a frame around the code
+tabsize=2,                      % sets default tabsize to 2 spaces
+captionpos=b,                   % sets the caption-position to bottom
+breaklines=true,                % sets automatic line breaking
+breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+escapeinside={\%*}{*)}          % if you want to add a comment within your code
+}
 
 %% enable TUM symbols on title page
 \usepackage{styles/tumlogo}
@@ -131,8 +162,8 @@
 % ]{hyperref}
 \fi
 
-
-\setcounter{tocdepth}{4}
+% Sets how many levels of Chapters/Sections/Subsections… etc. appear in the TOC
+\setcounter{tocdepth}{2}
 
 %% Fancy chapters
 %\usepackage[Lenny]{fncychap}
