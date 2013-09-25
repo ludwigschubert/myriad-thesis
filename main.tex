@@ -5,7 +5,7 @@
 \makeglossary
 
 \begin{document}
-	
+
 	% ---------------------------------------------------------------------------
 	%
 	% Front Matter
@@ -13,25 +13,25 @@
 	% ---------------------------------------------------------------------------
 	\frontmatter
 	\label{part:Front}
-	
-	    \input{components/cover}
 
-	    \clearemptydoublepage
-	
-	    \input{components/titlepage}
-	
-	    \input{components/disclaimer}
-	
-	    \input{components/abstract}
+    \input{components/cover}
+    
+    \clearemptydoublepage
+    
+    \input{components/titlepage}
+    
+    \input{components/disclaimer}
+    
+    \input{components/abstract}
+    
+    \input{components/acknowledgements}
+    
+    \input{components/table_of_contents}
 
-    	\input{components/acknowledgements}
 
-      \input{components/table_of_contents}
-  
-  	
-	% ---------------------------------------------------------------------------
-	%
-	% Main Matter
+  % ---------------------------------------------------------------------------
+  %
+  % Main Matter
   %
   % ---------------------------------------------------------------------------
   \mainmatter
@@ -39,31 +39,30 @@
   \label{part:Main}
   \addcontentsline{toc}{part}{Main Matter}
 
-    
+
     \input{chapters/introduction}
-		\input{chapters/technical_background}
-		\input{chapters/comparison}
-		\input{chapters/concept}
-		\input{chapters/implementation}
-		\input{chapters/evaluation}
-		\input{chapters/conclusion}
+    \input{chapters/technical_background}
+    \input{chapters/comparison}
+    \input{chapters/concept}
+    \input{chapters/implementation}
+    \input{chapters/evaluation}
+    \input{chapters/conclusion}
 
     \input{components/bibliography}
-
     \input{components/table_of_figures}
 
 
-	% ---------------------------------------------------------------------------
-	%
-	% Appendix
-	%
-	% ---------------------------------------------------------------------------
+  % ---------------------------------------------------------------------------
+  %
+  % Appendix
+  %
+  % ---------------------------------------------------------------------------
   \appendix
   \part*{Appendix}
   \label{part:Appendix}
   \addcontentsline{toc}{part}{Appendix}
 
     \input{chapters/appendix}
- 
- 
+
+
 \end{document}

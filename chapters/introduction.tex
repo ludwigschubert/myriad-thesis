@@ -1,11 +1,37 @@
 \chapter{Introduction}
 \label{chapter:Introduction}
 
-This is the introduction.
+This chapter gives an overview of the work, arguments for the relevance of new Email tools, as well as the goals pursued by this thesis. Concluding, the structure of the work is explained.
+
+\section{Motivation}
+
+The total number of worldwide email accounts -- 3.3 billion as of 2012 \citep{emailreport} -- indicates how email still is the primary means of asynchronous online communication, despite continued efforts from corporations for successor technologies. \\
+While specialized tools, e.g. Facebook's Events or Doodle, can provide a better experience, email is still the ubiquitous fall-back medium that everybody can access. It's non-centralized approach, relying only on deeply embedded infrastructure like the DNS system, has allowed email to become bigger than any proprietary tool.
+
+Thus it is unsurprising that email is used a lot as an organizational tool instead of the mere letter-like two person ocmmunication medium that it was set out to be. In fact, use of email as an organizational tool is primed to become even more prominent, with most of the growth and traffic in email usage coming from the corporate world. \citep[p. 3]{emailreport} A person might use email to figure out a good time for a meeting, soliciting comments on his work, or even just organizing a party.
+
+In all of the abovementioned scenarios, the user has to make a trade-off between effort and personalization -- writing individual emails versus sending out a mass mail.
+
+Now, there are lots of benefits of personalized emails. A higher response rate is one of the basic ones. Some scenarios require personalized information as part of the email in order to be effective, e.g. a grade report. Sometimes a personally addressed email is just a lot more likely to produce the desired result \citep[p. 1375, 1380]{emailsalutation}, as it increases perceived social pressure.
+
+In observing one instance of such a usage of email, a recruitment campaign for a scientific study, we observed a lot of duplicated efforts, inconsistent communication and overall potential for tool assistance.\footnote{See \autoref{section:FunctionalAnalysis}.} We set out to develop a mailmerge system that didn't require complicated desktop software, yet was more powerful and workflow oriented than previously available mailmerge software.\footnote{See \autoref{section:MailmergeSystems} for a more in-depth comparison with pre-existing systems.}
+
+\section{Goals and Background}
+
+We developed a web-based email client with mailmerging capabilities for massive parallel, yet personalized email conversations, Myriad. The focus of Myriad lies not on traditional, individual email based replies. Instead, it aims to provide tools that allow managing big amounts of similar emails efficiently.
+To fullfill this goal, Myriad provides a high level organizational abstraction called \code{Campaigns}, a visualization of individual conversation state and actionability, filtering and actions on groups of results, easy reusability and automation of replies (\code{Messages}), as well as support for delegation to assistants and generally usable integration into existing email and inforation management infrastructure.
+Those simple, combinable features are supposed to enable users' email workflows to be peersonalized and well-organized, while reducing manual or duplicated effort. To define a simple to understand goal for ourselves we created \autoref{figure:EffortVSPersonalization}, which plots user effort against personalization for an email campaign. The lower, left-hand corner is exemplified by a single mass mail: barely any personalization at minimal effort. The upper, right-hand corner shows writing every email by hand: maximum personalization, but at a high effort. Myriad's goal is to end up below the drawn line; achieving the desired degree of personalization at sublinear effort.
+
+\insertfigure{figures/effort_vs_personalization.pdf}{Myriad's goal is to achieve a desired degree of personalization at sublinear effort.}{figure:EffortVSPersonalization}{0.25}
+
+This thesis is based on research I conducted together with \href{mailto:ikas@in.tum.de}{Christian Ikas}, \href{mailto:boztop@gmail.com}{Barış Öztop} and \href{mailto:nicolas@cs.stanford.edu}{Nicolas Kokkalis}. To avoid overlap between the researchers, I will focus on the system design process, architecture and implementation details, for which I was mainly responsible.
+
+For a more in-depth look at the motivation for the project, the comparison with existing systems and the relevenace for survey research, see Barış Oztop's master thesis.\\
+For a more business-process focussed look at email workflow tools, see Christian Ikas' Master thesis.
 
 \section{Outline}
 
-\textbf{This chapter} will give an overview and arguments for the relevance of new Email tools, as well the goals pursued by this thesis. Additionally, the structure of the work is explained.
+\textbf{This chapter} gives an overview of the work, and arguments for the relevance of new Email tools, as well as the goals pursued by this thesis. Concluding, the structure of the work is explained.
 
 In \textbf{\autoref{chapter:Technical}}, \textbf{\nameref{chapter:Technical}}, relevant technical background information is provided. The decision to build a web app is motivated. Standard-compliant email systems are explained and relevant standards are introduced. Lastly, an introduction to workflow systems and historic examples is given.
 
@@ -23,7 +49,3 @@ This is followed by a \textbf{\hyperref[chapter:Bibliography]{Bibliography}} of 
 
 The \textbf{\nameref{part:Appendix}} contains selected source code examples, the development of the system design over time in UML Diagrams, and a \textbf{\nameref{chapter:Colophon}}.
 
-
-
-\section{Motivation}
-\section{Goals and Background}

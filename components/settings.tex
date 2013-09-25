@@ -11,26 +11,32 @@
 %  BCOR: binding correcion (Bindungskorrektur) (e.g.: BCOR5mm)
 %  DIV: Number of sheet sections (used for layout) (e.g.: DIV12)
 
-\renewcommand{\sectfont}{\normalfont \bfseries}        % Schriftart der Kopfzeile
+% Schriftart der Kopfzeile
+\renewcommand{\sectfont}{\normalfont \bfseries}
+
+% Use a sans-serif font. COmment out if you want a standard (serif) font.
+\renewcommand{\familydefault}{\sfdefault}
 
 % manipulate footer
 \usepackage{scrpage2}
 \pagestyle{scrheadings}
 \ifoot[\footertext]{\footertext} % \footertext set in INFO.TEX
 %\setkomafont{pagehead}{\normalfont\rmfamily}
-\setkomafont{pagenumber}{\normalfont\rmfamily}
+% \setkomafont{pagenumber}{\normalfont\rmfamily}
 
-\linespread{1.5}
+\usepackage{setspace}
+\linespread{1.2}
 
 % allow sophisticated control structures
 % TeX is Turing complete, FYI.
 \usepackage{ifthen}
 
 % use Palatino as default font
-\usepackage{palatino}
+%\usepackage{palatino}
+\usepackage{helvet}
 
 % enable special PostScript fonts
-\usepackage{pifont}
+% \usepackage{pifont}
 
 % make thumbnails
 \usepackage{thumbpdf}
@@ -53,6 +59,10 @@
 %\usepackage{verbatim}
 %\usepackage{program}
 \usepackage{listings}
+
+% Allows the creation of footnotes that are listed at the end of a chapter via \endote{}
+% Print the endotes bu including \theendnotes at the end of your chapter.
+\usepackage{endnotes}
 
 \lstset{ %
 language=Ruby,                  % choose the language of the code
@@ -85,6 +95,12 @@ escapeinside={\%*}{*)}          % if you want to add a comment within your code
 %% use colors
 \usepackage{color}
 
+%% custom colors
+\definecolor{SolarizedOrange}{HTML}{CB4B16}
+
+% Format the section/chapter titles, e.g. with a different color
+% \addtokomafont{sectioning}{\color{SolarizedOrange}}
+
 %% make fancy math
 \usepackage{amsmath}
 \usepackage{amsfonts}
@@ -105,8 +121,8 @@ escapeinside={\%*}{*)}          % if you want to add a comment within your code
 \usepackage[german,english]{babel}
 \selectlanguage{english}
 
-% use german characters as well
-\usepackage[utf8]{inputenc}       % allow Latin1 characters
+% Use UTF8. Anything else is a crime nowadays.
+\usepackage[utf8]{inputenc}
 
 % use initals dropped caps - doesn't work with PDF
 %\usepackage{dropping}
@@ -142,10 +158,10 @@ escapeinside={\%*}{*)}          % if you want to add a comment within your code
  \usepackage[pdftex]{graphicx}
  \DeclareGraphicsExtensions{.jpg,.JPG,.png,.pdf,.eps}
  \graphicspath{{figures/}}
- 
+
  %% Load float package, for enabling floating extensions
  \usepackage{float}
- 
+
  %% allow rotations
  \usepackage{rotating}
  %% use pdftex version of hyperref
@@ -165,6 +181,8 @@ escapeinside={\%*}{*)}          % if you want to add a comment within your code
 % Sets how many levels of Chapters/Sections/Subsections… etc. appear in the TOC
 \setcounter{tocdepth}{2}
 
+\usepackage[square,sort,comma,numbers]{natbib}
+
 %% Fancy chapters
 %\usepackage[Lenny]{fncychap}
 %\usepackage[Glenn]{fncychap}
@@ -173,6 +191,6 @@ escapeinside={\%*}{*)}          % if you want to add a comment within your code
 %\usepackage[avantgarde]{quotchap}
 
 % set the bibliography style
-%\bibliographystyle{styles/bauermaNum}
+\bibliographystyle{unsrt}
 %\bibliographystyle{alpha}
-\bibliographystyle{plain}
+%\bibliographystyle{plain}

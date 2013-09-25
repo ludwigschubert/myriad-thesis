@@ -1,53 +1,135 @@
 \chapter{Implementation}
 \label{chapter:Implementation}
 
+This chapter is concerned with technical details of how Myriad was implemented. The collaborative development process is described, as are actual system component and their functionality.
 
 \section{Preparation and Tools}
 
+\lipsum[1]
+
 \subsection{Development Environment}
+
+\lipsum[1]
 
 \subsection{Collaborative Development}
 
+\lipsum[1]
+
 \subsubsection{\code{git}, \code{gitflow} and Github}
+
+\lipsum[1]
 
 \subsection{Deployment}
 
+\lipsum[1]
+
 \subsubsection{Deployment Tool \code{Capistrano}}
+
+\lipsum[1]
 
 
 \section{Server Component}
 
-\subsection{Core Classes and their Interaction}
-
-\subsubsection{\code{Contact}}
-\subsubsection{\code{Template}}
-\subsubsection{\code{Email}}
-\subsubsection{\code{Campaign}}
-\subsubsection{\code{Conversation}}
-\subsubsection{\code{Key \& Value}}
-\subsubsection{\code{Search \& KeyBinding}}
-\subsubsection{\code{Notification}}
+\lipsum[1]
 
 \subsection{Workers and their Jobs}
 
+\lipsum[1]
+
 \subsection{Maintenance and Rake Tasks}
 
+\lipsum[1]
+
+
+\section{Core Classes and their Interaction}
+
+\lipsum[1]
+
+\subsection{\code{Contact}}
+
+\lipsum[1]
+\subsection{\code{Template}}
+
+\lipsum[1]
+\subsection{\code{Email}}
+
+\lipsum[1]
+
+\subsubsection{\code{FetchedEmail}}
+
+\lipsum[1]
+
+\subsubsection{\code{IncomingFetchedEmail}}
+
+\lipsum[1]
+
+\subsubsection{\code{OutgoingFetchedEmail}}
+
+\lipsum[1]
+
+\subsubsection{\code{CreatedEmail}}
+
+\lipsum[1]
+
+\subsubsection{\code{OutgoingCreatedEmail}}
+
+\lipsum[1]
+
+\subsubsection{\code{IncomingCreatedEmail}}
+
+This class is not implemented yet. While, at first sight, it might seem like an \emph{incoming} email could never be \emph{created} by the system, this could be used for a multitude of plausible scenarios, such as sending persistent messages to the user (instead of the more ephemeral on-screen notifications), importing emails from a non \code{IMAP} compatible email server, or even integrating a chat system, making incoming chat messages appear as emails to the system.
+
+\subsection{\code{Campaign}}
+
+\lipsum[1]
+
+\subsection{\code{Conversation}}
+
+\lipsum[1]
+
+\subsection{\code{Key \& Value}}
+
+\lipsum[1]
+
+\subsection{\code{Search \& KeyBinding}}
+
+\lipsum[1]
+
+\subsection{\code{Notification}}
+
+\lipsum[1]
 
 
 \section{Backend Services Connection}
 
+\lipsum[1]
+
 \subsection{Email Fetching}
+
+\lipsum[1]
 
 \subsubsection{IMAP IDLEing}
 
+\lipsum[1]
+
 \subsection{Google Docs Syncing}
+
+\lipsum[1]
 
 
 \section{``Best Practices''}
 
+\lipsum[1]
+
 \subsection{Core Extensions}
+
+\lipsum[1]
 
 \subsection{Lean Workers with AbstractWorker}
 
+\lipsum[1]
+
 \subsection{Monitoring Services}
+
+\lipsum[1]
 
