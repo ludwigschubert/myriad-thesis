@@ -3,7 +3,6 @@ all:
 	bibtex main
 	pdflatex main.tex
 	pdflatex main.tex
-	open main.pdf
 
 refresh:
 	pdflatex main.tex
