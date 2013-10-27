@@ -43,7 +43,7 @@ This chapter is concerned with technical details of how Myriad was implemented. 
 Myriad is built around the interaction of 5 model level concepts, or classes, and a set of assisting subsystems.
 |Campaigns|, which have a set of |Email|s and a bunch of |Contact|s as recipients. The relation between the campaign and the contacts is called |Conversation|; the relation between campaign and the emails is called |Template|.
 
-\insertfigure{figures/main_classes.pdf}{Myriad is built around the interaction of 5 model level classes.}{MainClasses}{1}
+\insertfigure{figures/cd_main.pdf}{Myriad is built around the interaction of 5 model level classes.}{CD-Main}{1}
 
 
 \subsection{Contact}
@@ -93,13 +93,22 @@ Conversations are like email threads in gmail, but scoped to a specific campaign
 
 \subsection{Key \& Value}
 
-One goal of a campaign can be the collection of information. For that, users create a data schema made up of Keys, that they (or somebody they share the campaign with) fill with Values. The Keys consist of a name – the header of the spreadsheet column – while values have a content – the content of a spreadsheet cell in the row of the contact they belong to.
+\insertfigure{figures/cd_key_value.pdf}{Key and Value together allow for storing arbitrary information about a contact in a campaign.}{CD-Key-Values}{1}
 
-\subsection{Search \& KeyBinding}
+One goal of a campaign can be the collection of information. For that, users create a data schema made up of Keys, that they (or somebody they share the campaign with) fill with Values. The Keys consist of a name – the header of the spreadsheet column – while values have a content – the content of a spreadsheet cell in the row of the contact they belong to.
+\pagebreak
+\subsection{Rules \& KeyBinding}
+
+\insertfigure{figures/cd_rules.pdf}{Rules rely on different ``bindings'' to define their matching criteria.}{CD-Rules}{1}
 
 Searches allow users to constrain the set of all conversations to a subset of them by defining criteria those conversations match. Each search consists of zero or more KeyBindings, zero or more TemplateBindings, as well as an optional conversation status constraint. A KeyBinding is a value that a key must have to satisfy a specific search. Similarly, a TemplateBinding tb of search s specifies a Template t such that a conversation c matches s if c contains an email e, and e is an instantiation of t.
 For example, a search might specify that a conversation should be unread to be part of the search’s results. But we also want to allow users to specify constraints on their own Keys, e.g. coming? = “yes”. For that, we needed a flexible way to specify those constraints. So we came up with the concept of a KeyBinding; it “binds the free Key variable to a specific value”. So a KeyBinding associates a search with a Key that contains a specific value (todo: add comparison operators. e.g. age > 21).
 Note that Searches are saved to the database. If they specify a template to be sent, we consider them to be “Rules” that can be automatically triggered. Otherwise they just clutter up the database and should eventually be purged by a cronjob. This persisting of searches could be used to remember recent searches.
+
+\pagebreak
+\subsection{ValueSettingActions}
+
+\insertfigure{figures/cd_actions.pdf}{ValueSettingActions allow a template to set a certain Key's value to a predefined value. Together with Rules, this allows for custom, state-machine-like behavior specification.}{CD-Actions}{1}
 
 \subsection{Notification}
 
