@@ -1,7 +1,9 @@
 \chapter{Implementation}
 \label{chapter:Implementation}
 
-This chapter is concerned with technical details of how Myriad was implemented. The collaborative development process is described, as are actual system component and their functionality.
+This chapter is concerned with technical details of how Myriad was implemented. The collaborative development process is described, as are actual system components and their functionality.
+
+The shown class diagrams follow a subset of the UML 2.0 class diagram standard\cite{uml}. Since these diagrams are primarily focussed on Myriad's data model, they are first and foremost Entity Relationship diagrams. They are simplified for illustrative purposes and do not constitute an exact specification.
 
 \section{Preparation and Tools}
 
@@ -38,7 +40,7 @@ This chapter is concerned with technical details of how Myriad was implemented. 
 
 
 \pagebreak
-\section{Core Classes}
+\section{Architecture}
 
 Myriad is built around the interaction of 5 model level concepts, or classes, and a set of assisting subsystems.
 |Campaigns|, which have a set of |Email|s and a bunch of |Contact|s as recipients. The relation between the campaign and the contacts is called |Conversation|; the relation between campaign and the emails is called |Template|.
