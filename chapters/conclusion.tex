@@ -5,8 +5,37 @@ Herein the relevance of this system and the proposed framework is discussed; fut
 
 \section{Conclusion of this work}
 
+This thesis presents a novel workflow tool for managing big amounts of bidirectional Email communication, as well as the myriad model of ABMC that the tool is based on.
+It’s my hope that this system inspires others to build email workflow systems, both with the help of the described ABMC model, and on top of the Myriad system. Myriad is not the end-all of email productivity, but rather aims to illustrate how novel tools can still enable innovative, more efficient ways of dealing with email.
+
 \section{Discussion of results}
 
-\section{Future Work}
+What I feel is clear from the observed usage of the system in the presented campaigns is that our two initial goals behind the system design have the potential to be met, even though the prototype still had rough edges during the evaluation process. We see in these examples that testers were able to use Myriads features to focus their time and energy on productive parts of their workflow, streamlining or eliminating a big part of the menial work behind email campaigns.
+
+This reinforces our belief that email tools were not sufficiently adapted to how they’re being used in |ABMC| contexts, and that small, simple features combined and integrated with existing personal email clients and general purpose tools can help alleviate this problem.
+While the Myriad system is indeed a proof of concept, the evaluation also showed that it could not be used without an explanation of its approach. I partly contribute this to the inherent necessity to be more abstract and complex than traditional email clients, but of course also to the limited amount of polish the software received.
+
+\section{Future Work Opportunities}
+
+\subsection{Scalability}
+
+Myriad’s current system architecture is one of a proof of concept, not of a working system with high performance. The system in principle supports conversations with thousands of participants, but would need reengineering as a distributed system to actually support larger number of participants.
+The tight coupling to Google’s Webmail Service Gmail allowed for rapid creation of a working prototype, but will hinder adoption of the current codebase by a wider audience.
+
+\subsection{Real-World Applicability}
+
+To become viable for real-world applications, Myriad would benefit from a variety of improvements already featured in existent CRM and CSS software. These include, but are not limited to: a more powerful templating language, analytic reports, mobile support.
+
+\subsection{Visualization}
+
+Myriad visualizes both individual and aggregate conversation state by very basic measures. For aggregate state, the message tree illustrates how many conversations have included each message. For individual state, the message tree marks any messages sent previously in a given conversation. Also, for each conversation, a colored badge represents the conversation's current status. We believe that great potential still exists to enhance Myriad's visualization capabilities, supporting users in identifying actions which demand their immediate attention, and generally visualizing their email workflow more clearly.
+
+\subsection{Granularity}
+
+Myriad only supports the reuse of whole messages. Even in the current state, it may be possible to work around this by using placeholders to dynamically insert whole sentences or paragraphs into a given message. Yet, this would be the kind of bothersome workaround Myriad set out to eliminate. Judging from experiences we made when evaluating Myriad, we feel the introduction of more granular templates, such as on a paragraph basis, is a challenging proposal, yet also required for tackling more complex use cases.
+
+\subsection{Human Time Investment}
+
+One of Myriad’s core ideas is to push complexity downwards on an axis of cost, as elaborated on in \autoref{chapter:Concept}. The current implementation of Myriad relies on crowd workers to go through large volume of emails. With progress in AI and NLP, it would be desirable to push these tasks down to a machine level as far as feasible, minimizing the need for human intervention in the workflow.
 
 

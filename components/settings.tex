@@ -1,8 +1,6 @@
 % Included by MAIN.TEX
 
-\documentclass[11pt,a4paper,bibtotoc,idxtotoc,headsepline,footsepline,footexclude,BCOR12mm,DIV13,parskip=full]{scrbook}
-
-%\documentclass[11pt,a4paper,bibtotoc,idxtotoc,headsepline,footsepline,footexclude,BCOR20mm,DIV10]{scrbook}
+\documentclass[11pt,a4paper,bibliography=totoc,index=totoc,headsepline,footsepline,footinclude=false,BCOR12mm,DIV13,parskip=half]{scrbook}
 
 % KOMA-Optionen:
 %  bibtotoc: include bibliography in table of contents
@@ -25,7 +23,12 @@
 % \setkomafont{pagenumber}{\normalfont\rmfamily}
 
 \usepackage{setspace}
-\linespread{1.2}
+\linespread{1.5}
+
+\input{components/hyphenation}
+
+% Allows fancier image captions
+\usepackage{caption}
 
 % allow sophisticated control structures
 % TeX is Turing complete, FYI.
@@ -43,6 +46,9 @@
 
 % to use the subfigures
 \usepackage{subfigure}
+
+% Use glossaries to make an index of abbreviations, technical words, etc.
+\usepackage[acronym, section, nopostdot]{glossaries}
 
 % colorful tables I guess...
 \usepackage{colortbl}

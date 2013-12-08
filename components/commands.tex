@@ -49,7 +49,7 @@
 
 
 %-------------------------------------------------------------
-% some abreviations ------------------------------------------
+% some abbreviations ------------------------------------------
 \newcommand{\Reg}{$^{\textregistered}$}
 \newcommand{\reg}{$^{\textregistered}$ }
 \newcommand{\Tm}{\texttrademark}
@@ -61,7 +61,7 @@
 
 
 %-------------------------------------------------------------
-% formating --------------------------------------------------
+% formatting --------------------------------------------------
 
 % Theorem & Co environments and counters
 \newtheorem{theorem}{Theorem}[chapter]
@@ -74,7 +74,7 @@
 \newtheorem{algorithm}[theorem]{Algorithm}
 
 % inserting figures
-\newcommand{\insertfigure}[4]{ % Filename, Caption, Label, Width percent of textwidth
+\newcommand{\insertfigure}[5]{ % Filename, Caption, Label, Width percent of textwidth, Source
 	\begin{figure}[htbp]
 		\begin{center}
 			\includegraphics[width=#4\textwidth]{#1}
@@ -82,6 +82,8 @@
 		\vspace{-0.4cm}
 		\caption{#2}
 		\label{#3}
+		\captionsetup{font={it}}
+		\caption*{Source: #5}
 	\end{figure}
 }
 
