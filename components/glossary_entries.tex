@@ -1,34 +1,55 @@
 \makeglossaries
 
-\newglossaryentry{deployment}{
-  name=deployment,
-  description={The process of moving software that is developed on a local machine to a remote server}
+% = Acronym Definition
+\newcommand{\lsad}[3]{ % Label, Acronym, Definition
+  \newacronym{#1}{\texttt{#2}}{#3}
 }
 
-\newacronym{imap}{\texttt{IMAP}}{Internet Message Access Protocol}
+% = Glossary Entry
+\newcommand{\lsge}[3]{ % Label, Acronym, Definition
+  \newglossaryentry{#1}{
+    name=#2,
+    description={#3}
+  }
+}
 
-\newacronym{smtp}{SMTP}{Simple Mail Transfer Protocol}
+% Glossary Entries
 
-\newacronym{bcc}{BCC}{Blind Carbon Copy}
+\lsge{deployment}{Deployment}{The process of moving software that is developed on a local machine to a remote server}
+\lsge{django}{Django}{A popular Python web application framework}
+\lsge{javascript}{JavaScript}{The standard client-side script programming language used in web development}
+\lsge{coffeescript}{CoffeeScript}{A programming language that transcompiles to JavaScript. Uses a modern syntax similar to Ruby or Python}
+\lsge{sproutcore}{SproutCore}{A popular JavaScript web application framework, a precursor to Ember.js}
+\lsge{emberjs}{Ember.js}{A modern client-side JavaScript web application framework}
+\lsge{apache}{Apache HTTP Server}{The classic de-facto standard HTTP server}
+\lsge{nginx}{NginX}{The modern de-facto standard HTTP server. Pronounced ``engine x''}
+\lsge{fastcgi}{FastCGI}{A standard protocol for interfacing interactive programs with a web server}
+\lsge{unicorn}{Unicorn}{A modern HTTP server for Rack applications}
+\lsge{rack}{Rack}{The de-facto standard interface for developing web applications in Ruby. Compare with FastCGI}
+\lsge{mongodb}{MongoDB}{The most popular document-oriented NoSQL database system}
+\lsge{redis}{Redis}{The most popular in-memory, key-value data store.}
+\lsge{nosql}{NoSQL}{A schemaless way of storing data. Contrast with SQL}
+\lsge{cron}{NoSQL}{The classic UNIX time-based job scheduler}
+\lsge{unix}{UNIX}{The basis of most modern computer operating systems such as Linux}
+\lsge{linux}{Linux}{An open source implementation of UNIX}
 
-\newacronym{cc}{CC}{Carbon Copy}
-
-\newacronym{crm}{CRM}{Customer Relationship Management}
-
-\newacronym{hci}{HCI}{Human-Computer Interaction}
-
-\newacronym{html}{\texttt{HTML}}{HyperText Markup Language}
-
-\newacronym{css}{CSS}{Cascading Style Sheets}
-
-\newacronym{ror}{RoR}{Ruby on Rails}
-
-\newacronym{saas}{SaaS}{Software as a Service}
-
-\newacronym{ui}{UI}{User Interface}
-
-\newacronym{ux}{UX}{User Experience}
-
-\newacronym{uid}{UID}{Unique Identifier}
-
-\newacronym{url}{URL}{Uniform Resource Locator}
+% Acronym Definition
+\lsad{abmc}{ABMC}{Asynchronous, Bi-directional Mass Communication}
+\lsad{imap}{IMAP}{Internet Message Access Protocol}
+\lsad{smtp}{SMTP}{Simple Mail Transfer Protocol}
+\lsad{cgi}{CGI}{Common Gateway Interface}
+\lsad{bcc}{BCC}{Blind Carbon Copy}
+\lsad{php}{PHP}{PHP: Hypertext Preprocessor}
+\lsad{cc}{CC}{Carbon Copy}
+\lsad{crm}{CRM}{Customer Relationship Management}
+\lsad{hci}{HCI}{Human-Computer Interaction}
+\lsad{http}{HTTP}{HyperText Transfer Protocol}
+\lsad{html}{HTML}{HyperText Markup Language}
+\lsad{css}{CSS}{Cascading Style Sheets}
+\lsad{ror}{RoR}{Ruby on Rails}
+\lsad{saas}{SaaS}{Software as a Service}
+\lsad{sql}{SQL}{Structured Query Language}
+\lsad{ui}{UI}{User Interface}
+\lsad{ux}{UX}{User Experience}
+\lsad{uid}{UID}{Unique Identifier}
+\lsad{url}{URL}{Uniform Resource Locator}
