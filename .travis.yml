@@ -1,32 +1,25 @@
 before_script:
-- "gem install travis-artifacts"
+- gem install travis-artifacts
 install:
-# Old, official way
-# - sudo add-apt-repository ppa:texlive-backports/ppa -y
-# - sudo apt-get update
-# - sudo apt-get install texlive texlive-latex-extra texlive-math-extra -y --fix-missing
-# New, hacky way; but current packages
 - mkdir -p /tmp/texlive && cd /tmp/texlive && wget https://gist.github.com/urdh/ca8ffcf7cb7c6eace9ad/raw/57718dd299f2e0cd4a2966c17222330624ec9383/texlive.profile
-- wget http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz && tar -xvf install-tl-unx.tar.gz && cd install-tl-* && sudo ./install-tl --profile=../texlive.profile
+- wget http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz && tar -xvf
+  install-tl-unx.tar.gz && cd install-tl-* && sudo ./install-tl --profile=../texlive.profile
 - cd $TRAVIS_BUILD_DIR && export PATH=/usr/local/texlive/CURRENT/bin/x86_64-linux:$PATH
-- sudo /usr/local/texlive/CURRENT/bin/x86_64-linux/tlmgr install babel-american babel-ngerman babel-german babel-english
-script: "make all"
+- sudo /usr/local/texlive/CURRENT/bin/x86_64-linux/tlmgr install babel-american babel-ngerman
+  babel-german babel-english
+script: make all
 notifications:
 - email: true
 branches:
   only:
   - master
 after_success:
-- "travis-artifacts upload --path main.pdf"
-- "mv main.pdf bt-ludwigschubert.pdf"
-- "travis-artifacts upload --target-path latest --path bt-ludwigschubert.pdf"
+- travis-artifacts upload --path main.pdf
+- mv main.pdf bt-ludwigschubert.pdf
+- travis-artifacts upload --target-path latest --path bt-ludwigschubert.pdf
 env:
   global:
   - ARTIFACTS_AWS_REGION=eu-west-1
   - ARTIFACTS_S3_BUCKET=myriad-artifacts
-  - secure: ! 'eF9p/GFOeoyVjApqflFLdbdx27YFNG+wuulDuOmjxYqJjizplG+iL2GXyn9W
-      b0H3lJbi9XK5o1SkTgOT/W3kpggDU65a/aX4j1C6AtsH8s2YJZvsFmKEP4WX
-      sslTTO4UkjBoXK6ud5hVMojlTAz9VRzU0+XcC9Wb5WSz1N/lPIg='
-  - secure: ! 'GcVJMvg2E5DR2YawozdSS4KaRnzu9y7yVAvzQcpSBzNsW46o4KPiOWQZxzkX
-      /GD1+eGInqffAeipVnOqbmLHk8TOPGc019McEWKQIrNtKM3sLGEwf9bfrfA7
-      rlefgAdz/sOPjbfShz4b+TQtU/VC+XkmwYZe4mfFoMfqU+LcawA='
+  - secure: hgLq6DvxAk3iV5ZvOFKQhImfAygV2FqWTTEDMWmA9xOWj+iB67NYfV3gp0SviwMvGGyzf2HDiw/cxLIgZbzcIA/WfI+7AP8Jq1Adr4MgzJSzU9oiH6vu/E/Jbeuam1T9F48JqasFHjTdw5mW7CPIa3/wObo7BH0NCwLCWHZh2to=
+  - secure: daZ3mtttJfNREfEqZxX/w39Gd9YJdjPpE5/U38XBgQZWSLYxYOGZKYZwxBOj2nToCJSSl53LNXP3xgZ0qC4ErEghOjAp5531ljQWDqounO4Z/rO3Kjq+rbLlVpkNhOkyzlNd+BLFBmmn59antryP29tj+8QGu8hFDSOCXYO9KDQ=
