@@ -16,13 +16,15 @@ Now, there are lots of benefits of personalized emails. A higher response rate i
 
 In observing one instance of such a usage of email, a recruitment campaign for a scientific study, we observed a lot of duplicated efforts, inconsistent communication and overall potential for tool assistance.\footnote{See \autoref{section:FunctionalAnalysis}.} We set out to develop a mail merge system that didn't require complicated desktop software, yet was more powerful and workflow oriented than previously available mail merge software.\footnote{See \autoref{section:MailmergeSystems} for a more in-depth comparison with pre-existing systems.}
 
-\section{Goals and Background}
+\section{Goals}
 
 We developed a web-based email client with mail merging capabilities for massive parallel, yet personalized email conversations, Myriad. The focus of Myriad lies not on traditional, individual email based replies. Instead, it aims to provide tools that allow managing big amounts of similar emails efficiently.
 To fulfill this goal, Myriad provides a high level organizational abstraction called \code{Campaigns}, a visualization of individual conversations' state and actionability, filtering and actions on groups of results, easy reusability and automation of replies (\code{Messages}), as well as support for delegation to assistants and generally usable integration into existing email and information management infrastructure.
 Those simple, combinable features are supposed to enable users' email workflows to be both personalized and well-organized, while reducing manual and duplicated effort. To define a simple goal for ourselves we created \autoref{figure:EffortVSPersonalization}, which plots user effort against personalization for an email campaign. The lower, left-hand corner is exemplified by a single mass mail: barely any personalization at minimal effort. The upper, right-hand corner shows writing every email by hand: maximum personalization, but at a high effort. Myriad's goal is to end up below the drawn line; achieving the desired degree of personalization at sublinear effort.
 
 \insertfigure{figures/effort_vs_personalization.pdf}{Myriad's goal is to achieve a desired degree of personalization at sublinear effort.}{figure:EffortVSPersonalization}{0.25}
+
+\section{Collaboration}
 
 This thesis is based on research I conducted together with \href{mailto:ikas@in.tum.de}{Christian Ikas}, \href{mailto:boztop@gmail.com}{Barış Öztop} and \href{mailto:nicolas@cs.stanford.edu}{Nicolas Kokkalis}. To avoid overlap between the researchers, I will focus on the system design process, architecture and implementation details. Those were my main responsibilities in the project.
 

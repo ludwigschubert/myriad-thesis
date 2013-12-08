@@ -7,7 +7,7 @@ This chapter provides relevant technical background information. It motivates th
 
 This section comprises an introduction to web applications and their development. It lays the foundation for the implementation details of the Myriad system in chapter \autoref{chapter:Implementation}.
 
-Web applications, or, more precisely, \emph{web-based applications}, don't have a strict formal definition, but here the term is used in its common meaning\cite{webapptrends}: an application, which is accessed through a web browser. Unlike a traditional computer program that is usually written in a single programming language, compiled and then executed on a computer, a web application consists of many interoperating systems and programs, commonly not even run on the same machine. \footnote{While the distributed, non-homogeneous nature of web applications makes their development process more complex, it also afforded me the opportunity to learn about the full spectrum of the current unix eco-system.}
+Web applications, or, more precisely, \emph{web-based applications}, don't have a strict formal definition, but here the term is used in its common meaning\citep{webapptrends}: an application, which is accessed through a web browser. Unlike a traditional computer program that is usually written in a single programming language, compiled and then executed on a computer, a web application consists of many interoperating systems and programs, commonly not even run on the same machine. \footnote{While the distributed, non-homogeneous nature of web applications makes their development process more complex, it also afforded me the opportunity to learn about the full spectrum of the current unix eco-system.}
 
 Traditionally, a website is comprised of static \gls{html} files and \gls{css} markup to display its content. To support the dynamic nature of user-specific \em{applications} rather than \em{documents}, a typical approach is to generate the \gls{html} files dynamically at request time. Together with client side executed \gls{javascript}, this supports more interactivity. This is the current standard for many web development frameworks such as \gls{ror}, \gls{django} or \gls{php}.
 
@@ -23,7 +23,12 @@ Apart from this primary web stack many web applications rely on additional servi
 
 \subsection{Ruby on Rails}
 
+\acrfull{ror} is a \gls{ruby} based web application framework. As of \today, according to \citet{builtwith}, it is the \nth{13} popular framework for building websites. In the top 10.000 websites, \gls{ror}'s ranked \nth{6} though, showing its success in building more successful websites.
 
+Originally \gls{ror} was a spin-off of \gls{basecamp} by 37signals, that David Hansson extracted in early 2004.\citep{railsinterview}
+\citep{agilewebdev}
+
+David Heinemeier Hansson extracted  from his work on Basecamp, a project management tool by 37signals (now a web application company).[3]
 
 \insertfigure{figures/rails_architecture.png}{Ruby on Rails Architecture Diagram}{RailsArchitecture}{.75}{Picasa User ``Niwatori''}
 
@@ -33,7 +38,7 @@ Apart from this primary web stack many web applications rely on additional servi
 
 \subsection{RFC 2822}
 
-Email is standardized as the ``Internet Message Format'' in RFC 2822\cite{email}.
+Email is standardized as the ``Internet Message Format'' in RFC 2822 \citep{email}.
 
 \subsection{IMAP \& SMTP}
 
