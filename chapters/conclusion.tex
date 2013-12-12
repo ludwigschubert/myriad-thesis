@@ -17,18 +17,23 @@ While the Myriad system is indeed a proof of concept, the evaluation also showed
 
 \section{Future Work Opportunities}
 
+To alleviate this, work on Myriad is still continuing. As of November 2013, Maciej Jozwiak has taken over development of Myriad. He is working on refining the user interface and general usability. Additionally, he will focus on one or more of these future work opportunities:
+
 \subsection{Scalability}
 
 Myriad’s current system architecture is one of a proof of concept, not of a working system with high performance. The system in principle supports conversations with thousands of participants, but would need reengineering as a distributed system to actually support larger number of participants.
+The system bootstrapping process is currently not sufficiently automated to allow non-manual scaling to multiple application servers.
 The tight coupling to Google’s Webmail Service Gmail allowed for rapid creation of a working prototype, but will hinder adoption of the current codebase by a wider audience.
 
 \subsection{Real-World Applicability}
 
-To become viable for real-world applications, Myriad would benefit from a variety of improvements already featured in existent CRM and CSS software. These include, but are not limited to: a more powerful templating language, analytic reports, mobile support.
+To become viable for real-world applications, Myriad would benefit from a variety of improvements already featured in existent CRM and CSS software. These include, but are not limited to: a more powerful templating language, analytic reports, mobile support. Our extensive reporting tools have also uncovered that sometimes external services like Google Mail aren't working as specified for hours, or are unexpectedly dropping connections a lot more often than one would assume from day to day use of such services. Currently those system failures require manual intervention, such as triggering a retry. Detailed analysis of the aforementioned breakdown could lead to the development of heuristics that help recover from those failure states.
 
 \subsection{Visualization}
 
-Myriad visualizes both individual and aggregate conversation state by very basic measures. For aggregate state, the message tree illustrates how many conversations have included each message. For individual state, the message tree marks any messages sent previously in a given conversation. Also, for each conversation, a colored badge represents the conversation's current status. We believe that great potential still exists to enhance Myriad's visualization capabilities, supporting users in identifying actions which demand their immediate attention, and generally visualizing their email workflow more clearly.
+Myriad visualizes both individual and aggregate conversation state by very basic measures. For aggregate state, the message tree illustrates how many conversations have included each message. For individual state, the message tree marks any messages sent previously in a given conversation. Also, for each conversation, a colored badge represents the conversation's current status. We believe that great potential still exists to enhance Myriad's visualization capabilities, supporting users in identifying actions which demand their immediate attention, and generally visualizing their email workflow more clearly. An example of how such a visualization could look is given in \autoref{figure:GoogleAnalytics} on page \pageref{figure:GoogleAnalytics}.
+
+\insertfigure{figures/google_analytics.png}{Google Analytics showing an implementation of a Flow Visualization. Prototypes of Myriad included a similar view.}{figure:GoogleAnalytics}{0.75}{Screenshot of Google Analytics}
 
 \subsection{Granularity}
 
@@ -36,6 +41,6 @@ Myriad only supports the reuse of whole messages. Even in the current state, it 
 
 \subsection{Human Time Investment}
 
-One of Myriad’s core ideas is to push complexity downwards on an axis of cost, as elaborated on in \autoref{chapter:Concept}. The current implementation of Myriad relies on crowd workers to go through large volume of emails. With progress in AI and NLP, it would be desirable to push these tasks down to a machine level as far as feasible, minimizing the need for human intervention in the workflow.
+One of Myriad’s core ideas is to push complexity downwards on an axis of cost, as elaborated on in \autoref{chapter:Concept}. The current implementation of Myriad relies on crowd workers to go through large volume of emails. With progress in \gls{ai} and \gls{nlp}, it would be desirable to push these tasks down to a machine level as far as feasible, minimizing the need for human intervention in the workflow.
 
 

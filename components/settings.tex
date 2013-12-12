@@ -66,6 +66,20 @@
 %\usepackage{program}
 \usepackage{listings}
 
+% Add your keywords here, and have this in a separate file
+% and include it in your preamble
+\lstset{
+  emph={
+          downto, for, rails
+       },
+  emphstyle={
+          \bfseries\color{orange}\bfseries
+       }
+}
+
+\lstset{language=Ruby}
+
+
 \usepackage{fancyvrb}
 \DefineShortVerb{\|}
 

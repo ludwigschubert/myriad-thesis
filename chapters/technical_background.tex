@@ -9,9 +9,9 @@ This section comprises an introduction to web applications and their development
 
 Web applications, or, more precisely, \emph{web-based applications}, don't have a strict formal definition, but here the term is used in its common meaning\citep{webapptrends}: an application, which is accessed through a web browser. Unlike a traditional computer program that is usually written in a single programming language, compiled and then executed on a computer, a web application consists of many interoperating systems and programs, commonly not even run on the same machine. \footnote{While the distributed, non-homogeneous nature of web applications makes their development process more complex, it also afforded me the opportunity to learn about the full spectrum of the current unix eco-system.}
 
-Traditionally, a website is comprised of static \gls{html} files and \gls{css} markup to display its content. To support the dynamic nature of user-specific \em{applications} rather than \em{documents}, a typical approach is to generate the \gls{html} files dynamically at request time. Together with client side executed \gls{javascript}, this supports more interactivity. This is the current standard for many web development frameworks such as \gls{ror}, \gls{django} or \gls{php}.
+Traditionally, a website is comprised of static \gls{html} files and \gls{css} markup to display its content. To support the dynamic nature of user-specific \emph{applications} rather than \emph{documents}, a typical approach is to generate the \gls{html} files dynamically at request time. Together with client side executed \gls{javascript}, this supports more interactivity. This is the current standard for many web development frameworks such as \gls{ror}, \gls{django} or \gls{php}.
 
-Future Web Applications will most likely go further in their separation of concerns, shifting the application logic to the client side. With frameworks such as \gls{sproutcore} and \gls{emberjs}, which are served statically and execute all business logic on the client side in \gls{javascript} while relying on the server mainly as a data source, one can already see the beginnings of this clearer, more mature development paradigm. As of the time of writing however\footnote{ \today }, the model of dynamically rendered \gls{html} files is still prominent. With larger communities and good documentation it is the de-facto standard of web application development.
+Future Web Applications will most likely go further in their separation of concerns, shifting the application logic to the client side. With frameworks such as \gls{sproutcore} and \gls{emberjs}, which are served statically and execute all business logic on the client side in \gls{javascript} while relying on the server mainly as a data source, one can already see the beginnings of this clearer, more mature development paradigm. As of the time of writing however\footnote{ \today }, the model of dynamically rendered \gls{html} files is still prominent. With a large communities and the majority of the web being developed in a language in this model\citep{builtwith}, it is the de-facto standard of web application development.
 
 \subsection{Software Stacks}
 
@@ -23,15 +23,49 @@ Apart from this primary web stack many web applications rely on additional servi
 
 \subsection{Ruby on Rails}
 
-\acrfull{ror} is a \gls{ruby} based web application framework. As of \today, according to \citet{builtwith}, it is the \nth{13} popular framework for building websites. In the top 10.000 websites, \gls{ror}'s ranked \nth{6} though, showing its success in building more successful websites.
+\acrfull{ror} is a \gls{ruby} based web application framework. As of \today, according to \citet{builtwith}, it is the \nth{13} popular framework for building websites. In the top 10.000 websites, \gls{ror}'s ranked \nth{6} though, showing its success in building more successful websites. Famous examples of websites built at least partly on \gls{ror} include Groupon, Twitter and Github\citep{ror}.
 
-Originally \gls{ror} was a spin-off of \gls{basecamp} by 37signals, that David Hansson extracted in early 2004.\citep{railsinterview}
-\citep{agilewebdev}
+Originally \gls{ror} was a spin-off of \gls{basecamp} by 37signals, that David Hansson extracted in early 2004 and released as Open Source.\citep{railsinterview} By February 2005 he started accepting work from other developers. \gls{ror} gained popularity when companies like Twitter announced they were using it\citep{forbestwitterror}, and when Apple included \gls{ror} in their operating system \gls{macosx}.
 
-David Heinemeier Hansson extracted  from his work on Basecamp, a project management tool by 37signals (now a web application company).[3]
+A probable cause for \gls{ror}'s enthusiastic reception in the developer community is its focus on three developer-friendly principles: \acrfull{coc}, \gls{dry} and its suitablity for Agile Development.\citep{agilewebdev}
+
+\subsubsection{\acrlong{coc}}
+
+A traditional view of software development includes a trade-off: flexibilty versus simplicity. \acrshort{coc} aims to resolve this tradeoff by designing software to behave correctly for most situations without requiring explicit configuration by developers, while allowing this configuration once additional flexibilty is needed. This paradigm not only helps to eliminate a lot of ``boilerplate code'', but also aids collaborative development: if, for example, a \gls{ror} project is always arranged in a certain standardized folder structure, other \gls{ror} developers will have little trouble finding their way in another developer's project, and \gls{ror} can automatically load model classes without explicit |require| or |import| statements. This behavior is called autoloading. If, on the other hand, a project requires extensive use of custom non-model classes, \acrshort{coc} allows a developer to break this structure and still profit from autoloading by explicitly adding his classes to the autoload path.\citep{railsautoloading}
+
+\subsubsection{\acrlong{dry}}
+
+\acrshort{dry} is a software development paradigm that forbids duplication of essential information of any kind. The original wording in ``The pragmatic Programmer'' by \citet{Hunt:2000:PPJ:320326} is as follows:
+
+\begin{quote}
+  
+Every piece of knowledge must have a single, unambiguous, authoritative representation within a system.
+  
+\end{quote}
+
+In \gls{ror} \acrlong{dry} is upheld quite thoroughly. Examples include the \acrfull{orm} \gls{activerecord}'s configuration, which reads object attribute names from database columns unless explicitly configured otherwise. Also page templates can be made to contain very little to no duplication. \footnote{A process that is sheepishly called \emph{DRYing}.} \gls{ror} allows this by providing hierarchical layout files, |include|able partials and view helper functions. It is not uncommon in \gls{ror}, for example, to have a fully generic system for generating page titles. While this is more complex than simply putting a |<head> <title> Title </title> </head>| in every page, it reduces the overhead associated with changing such page titles later.
+
+The term \acrfull{wet} has since been coined to denote a deviation from \gls{dry} principles. \citep{wet}
+
+\subsubsection{Agile Development}
+
+While Agile Development is a complex topic, two core claim of the agile principles are that code has to be \emph{quick to write} to rapidly deliver useful software \citep[Principle 1]{martin2003agile} and \emph{quick to change} to adapt to changing requirements \citep[Principle 2]{martin2003agile}. One can easily see how the aforementioned principles fit into this picture: \acrshort{coc} allows developers to write a lot less code upfront, while \acrshort{dry} allows changes to be executed in a single place in the code.
+
+\gls{ror} includes special code generators called \gls{scaffold}s that allow developers to generate application prototypes by just specifying the model names and attributes, like so:
+
+\begin{lstlisting}[escapechar=!]
+  rails !\emph{generate scaffold} \textcolor{blue}{User} \textcolor{NavyBlue}{name birthday}!:date
+\end{lstlisting}
+
+This command generates a model class |User| with a field |name| of type |String| and a field |birthday| of type |Date|, a database migration for that model, a controller to manipulate it, views to view and manipulate it, as well as an empty test files for model, controller and views. The resulting application can be run without further configuration and provides a starting point for further development:
+
+\insertfigure{figures/rails_scaffold.png}{A list of users and an ``Edit User'' form, generated by \gls{ror} scaffolding.}{RailsScaffoldNewUser}{1.0}{Own Screenshot}
+
+\subsection{Components of \gls{ror}}
+
+TODO?
 
 \insertfigure{figures/rails_architecture.png}{Ruby on Rails Architecture Diagram}{RailsArchitecture}{.75}{Picasa User ``Niwatori''}
-
 
 \section{Email}
 

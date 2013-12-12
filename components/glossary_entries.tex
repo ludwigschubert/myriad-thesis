@@ -1,4 +1,31 @@
-\makeglossaries
+% = Commands for suppressing page numbers for unused glossary entries
+
+\newcommand*{\glsgobblenumber}[1]{}
+% \renewcommand*{\glsgobblenumber}[1]{#1}% uncomment for testing
+
+\makeatletter
+%% lockstep's code
+\newcommand*{\glsaddnp}[2][]{%
+  \glsdoifexists{#2}%
+  {%
+%     \def\@glsnumberformat{glsnumberformat}% DELETED
+    \def\@glsnumberformat{glsgobblenumber}% NEW
+    \edef\@gls@counter{\csname glo@#2@counter\endcsname}%
+    \setkeys{glossadd}{#1}%
+    \@gls@saveentrycounter
+    \@do@wrglossary{#2}%
+  }%
+}
+%% new code; modified \glsaddall
+\newcommand{\glsaddallunused}[1][]{%
+  \edef\@glo@type{\@glo@types}%
+  \setkeys{glossadd}{#1}%
+  \forallglsentries[\@glo@type]{\@glo@entry}{%
+    \ifglsused{\@glo@entry}{}{%
+     \glsaddnp[#1]{\@glo@entry}}}%
+}
+\makeatother
+
 
 % = Acronym Definition
 \newcommand{\lsad}[3]{ % Label, Acronym, Definition
@@ -34,6 +61,9 @@
 \lsge{linux}{Linux}{An open source implementation of UNIX}
 \lsge{ruby}{Ruby}{A dynamic object oriented programming language by Yukihiro Matsumoto. Gained a lot of popularity after being used to develop Ruby on Rails}
 \lsge{basecamp}{Basecamp}{A collaboration tool by 37Signals, from which the original Ruby on Rails framework was extracted.}
+\lsge{macosx}{Mac OS X}{The operating system for Mac computers since 2001.}
+\lsge{activerecord}{Active Record}{An architectural pattern for retrieving domain objects from relational databases, as well as the name for Ruby on Rail's implementation of that pattern.}
+\lsge{scaffold}{Scaffold}{Generated code by Ruby on Rails used for rapid prototyping, includes model classes, database migrations, controllers and tests just by providing a model name and fields.}
 
 % Acronym Definition
 \lsad{abmc}{ABMC}{Asynchronous, Bi-directional Mass Communication}
@@ -54,4 +84,13 @@
 \lsad{ui}{UI}{User Interface}
 \lsad{ux}{UX}{User Experience}
 \lsad{uid}{UID}{Unique Identifier}
+\lsad{uml}{UML}{Unified Modeling Language}
 \lsad{url}{URL}{Uniform Resource Locator}
+\lsad{coc}{CoC}{Convention over Configuration}
+\lsad{dry}{DRY}{Don't Repeat Yourself}
+\lsad{wet}{WET}{Write Everything Twice; also: We Enjoy Typing}
+\lsad{orm}{ORM}{Object-relational Mapper}
+\lsad{ai}{AI}{Artificial Intelligence}
+\lsad{nlp}{NLP}{Natural Language Processing}
+
+\makeglossaries

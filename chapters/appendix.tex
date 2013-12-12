@@ -1,57 +1,101 @@
 \chapter{Selected Source Code Examples}
 \label{chapter:CodeExamples}
 
+This thesis focusses heavily on the developed system Myriad. In this chapter I present a couple of noteworthy classes or modules that go beyond a standard \gls{ror} application. These are interesting either for clarity of definition, unorthodox but useful behavior, or for showcasing functional patterns in a language one would not immediately expect to support them.
+
+\section{Notification}
+
+The \code{Notification} class is a good example of the idiomatic \gls{ruby} code we strived to produce. Meaningful, readable method names that contain very simple logic, and are composed to bigger statements. Left-to-right evaluation eliminates the need for explicit |nil?| checks in a higher level function like |has_resource?|. Question marks clearly indicate methods that return boolean values. |resource_class| employs dynamic programming so Notification can be attached to any object class at runtime. Subclasses of Notification take care of instantiation behavior in different contexts. Since |Notification|s are not reassigned to different |resource|s after initialization, the |resource| is memoized idiomatically using \gls{ruby}'s conditional assign operator \lstinline{||=}.
+
 \begin{lstlisting}
   class Notification < ActiveRecord::Base
     belongs_to :user
-    attr_accessible :user, :message, :resource_id, :resource_type
+
+    def has_resource?
+      should_have_resource? and resource.present?
+    end
 
     def resource
       @resource ||= resource_class.find resource_id
     rescue ActiveRecord::RecordNotFound
       nil
     end
+    
+    private
   
-    def resource_class
-      resource_type.classify.constantize
-    end
-  
-    def has_resource?
-      should_have_resource? and resource.present?
-    end
-  
-    def should_have_resource?
-      resource_type.present? and resource_id.present?
-    end
+      def resource_class
+        resource_type.classify.constantize
+      end
+    
+      def should_have_resource?
+        resource_type.present? and resource_id.present?
+      end
    
+  end
+\end{lstlisting}
+
+\section{rake db:validate}
+
+We had to perform a big number\footnote{\lstinline{cd ~/myriad/db/migrations && ls -l | awk '!/^d/\{print \}' | wc -l} returns 82 migrations.} of database migrations while already handling live tester's data. This data included our professor's emails, so I searched for a way to ensure our migrations and code changes would not create database records that would be considered invalid by the changed validation code, a problem that's not usually detected during a migration and will lead to hard-to-debug problems during usage. The solution we built is a rake task called ``db:validate''. It dynamically discovers all \gls{activerecord} classes and runs their validations on them. As part of the test suite it would be run against a copy of the production database before deploying a new release. While the actual class got more complicated to account for exceptional validation behavior, progress indication, and interactive deletion capabilities, the original formulation is still intriguingly simple.
+
+\begin{lstlisting}
+  def invalid_records
+    classes = ActiveRecord::Base.descendants
+    classes.flat_map{ |class| class.all.reject(&:valid?) }
+  end
+\end{lstlisting}
+
+\section{The hidden Monad pattern}
+
+I realized an unexpected bit of awesomeness in \gls{ruby}'s \lstinline{||=} and \lstinline{&&=} operator. They employ short-circuiting logic, meaning that if the left hand of the operands is (not in the case of \lstinline{&&=}) logically true, the right hand side will not even be evaluated.
+
+What this means is that those operators can be used to choose between a series of assignments:
+
+\begin{lstlisting}
+  def find_or_create_by_email(email_address)
+    user   = User.find_by_email(email_address)
+    user ||= User.create(email: email_address)
+  end
+\end{lstlisting}
+
+Or conditionally execute a series of operations that could fail:
+
+\begin{lstlisting}
+
+  def imap_connection
+    c   = imap_host(current_user)
+    c &&= IMAP.connect_to(c)
+    c &&= c.authenticate(current_user)
   end
 
 \end{lstlisting}
 
-\chapter{UML Diagrams over time}
+What this reminds me of is a (non-nestable) |Maybe| Monad in Haskell. Of course after ``discovering'' this practical feature of \gls{ruby} I quickly realized I was not alone in this observation and found \citet{rubymonads} describing those properties in 2011.
+
+\chapter{Class Diagrams over time}
 \label{chapter:UMLDiagrams}
 
-Test esetnetcyiegslcsgeycagfjegsf
+This chapter describes the usage of class diagrams in the development process of Myriad. Automatically generated class diagrams are contrasted with hand drawn ones; and the departion from the \gls{uml} for class diagrams is explained.
 
-\section{Usage of UML Diagrams for internal communication}
+Distributed devlopment with three to five participants in a dynamic language with no compile-time interface checks presents ample opportunity for mistakes. We realized early on that we wouldn't be able to keep up our agile development speed if we had to document our interfaces with every code change. Also in the early phase of development it wasn't so much the interfaces to the classes that changed, but rather the architecture and naming of classes.
 
-\lipsum[2]
+The solution I proposed were automatically generated class diagrams that developers colud refer to during coding. These were updated after merging other developer's code and instantly reflected any changes one needed to be aware of. \autoref{UMLDiagramAutoGenerated} shows one of the last class diagrams that we used.
 
-\section{Stability of UML Diagrams over time}
+\insertfigure{figures/models_diagram.pdf}{Automatically generated class diagrams like this were used as reference during development.}{UMLDiagramAutoGenerated}{1}{Own screenshot, generated by RailRoady \citep{railroady}}
 
-\lipsum[3]
+Once class structure had stabilized to a sensible level we also hand-drew class diagrams. The undeniable advantage of these diagrams is that they were arranged in a way that was meaningful to us as developers. We grouped classes that were often used together, used font size and cut to differentiate ``core'' classes from ``helper'' classes, and only listed attributes whose names we often forgot or got wrong. We feel that even though less standardized than correct UML diagrams, these actually helped us more during the development process. I'd be an interesting topic to explore visualization techniques for object oriented programming and compare them to methodically sound visualizations used for specification, such as \gls{uml} class diagrams.
 
-\pagebreak
+The following 4 pages contain those hand drawn class diagrams. Observations on the amount and quality of changes are given in the description of the figure, so diagrams can fill the whole page. All of the diagrams were drawn in collaboration with Christian Ikas.
 
-\insertfigure{figures/uml_class_diagram_01.pdf}{The first stable UML Diagram from January \nth{24} still had separate \code{Email} and \code{contacts\_messages} tables, no rule automation and a semantically incomplete model of Emails which didn't discern between user generated emails and system generated emails.}{UMLDiagram01}{1}{}
+\insertfigure{figures/uml_class_diagram_01.pdf}{The first stable class diagram from January \nth{24} still had separate \code{Email} and \code{contacts\_messages} tables, no rule automation and a semantically incomplete model of Emails which didn't discern between user generated emails and system generated emails.}{UMLDiagram01}{1}{Own drawing with Christian Ikas}
 
-\insertfigure{figures/uml_class_diagram_02.pdf}{The second UML Diagram from May \nth{28} fixed most of the aforementioned problems and already introduced optimizations such as extracting the RawMail content to a different table. Those had become necessary when support for attachments was introduced.}{UMLDiagram02}{0.75}{}
+\insertfigure{figures/uml_class_diagram_02.pdf}{The second class diagram from May \nth{28} fixed most of the aforementioned problems and already introduced optimizations such as extracting the RawMail content to a different table. Those had become necessary when support for attachments was introduced.}{UMLDiagram02}{0.75}{Own drawing with Christian Ikas}
 
-\insertfigure{figures/uml_class_diagram_03.pdf}{This third UML Diagram from May \nth{29} finally tamed the \code{Email} inheritance tree, and also introduced improvements to legibility for the first time.}{UMLDiagram03}{1}{}
+\insertfigure{figures/uml_class_diagram_03.pdf}{This third class diagram from May \nth{29} finally tamed the \code{Email} inheritance tree, and also introduced improvements to legibility for the first time.}{UMLDiagram03}{1}{Own drawing with Christian Ikas}
 
-\insertfigure{figures/uml_class_diagram_04.pdf}{By the time of this fourth UML Diagram from April \nth{18} only minor improvements were still made to the system design, such as adding \code{ValueSettingAction}s and supporting assistants via \code{SharingAssignment}s.}{UMLDiagram04}{1}{}
+\insertfigure{figures/uml_class_diagram_04.pdf}{By April \nth{18} \code{ValueSettingAction}s and assistant \code{SharingAssignment}s were added. Note how support for importing emails by label necessiated a direct connection from \code{Campaign}s to \code{Email}s which are not associated to any \code{Template}.}{UMLDiagram04}{1}{Own drawing with Christian Ikas}
 
 
 \chapter{Colophon}
 \label{chapter:Colophon}
-This thesis is set in \LaTeX \citep{latex}. The template used is based on the official TUM Computer Science template. The sources are under version control by git; hosted publicly on GitHub. The PDF file is built by the continuous integration server Travis.
+This thesis is set in \LaTeX \citep{latex}. The template used is based on the official TUM Computer Science template. This template is meant for a doctoral theses and was heavily customized and expanded for writing about software development. Since the sources to this document are available publicly on GitHub, I would actively encourage other students to use it as a template. The resulting PDF file is built by the continuous integration server Travis, of which the configuration is also available in the repository. The build script also uploads the current build of the thesis to Amazon S3, to enable advisors to have a permanent link to the current state of the thesis.

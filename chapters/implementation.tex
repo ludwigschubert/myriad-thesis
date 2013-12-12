@@ -169,13 +169,13 @@ During the development process we discovered a set of ``Best Practices'' that di
 
 A dynamic language like ruby makes it trivially easy to reopen core classes. [citation needed] While initially the convenience seems awesome, it's easy to lose track of already implemented extensions, you risk colliding method names\footnote{Ruby 2.0 finally fixed this by introducing \emph{refinements}, a way to extend classes namespaced to the current module.}, and reusability is higher if one just packages those extensions as a new class.
 
-However we did decide to keep a couple of our extensions, which we felt were essential. Here's a list of them, together with explanations why they seem like good ideas:
+However we did decide to keep a couple of our extensions, which we felt were both useful and felt idiomatic. Here's a list of them, together with explanations why we kept them even through multiple code cleanups:
 
 \subsubsection{String}
 
 \begin{description}
 
-\item[remove\_all\_whitespace] A common task when interfacing with APIs, especially when interfacing with IMAP where one can't use a proper parser. This came up multiple times during development, and a commonly suggested solution is to use regular expressions, like so: |gsub /\s+/, ''|. While working perfectly fine, we wanted a more expressive name. This was left as an extension because similar whitespace altering functions like |.strip| or  |.squish| are also declared directly on |String|.
+\item[remove\_all\_whitespace] A common task when interfacing with APIs, especially when interfacing with IMAP where one can't use a proper parser. This came up multiple times during development, and a commonly suggested solution is to use regular expressions, like so: |gsub /\s+/, ''|. While working perfectly fine, we wanted a more expressive name. This was left as an extension because similar whitespace altering functions like |#strip| or  |#squish| are also declared directly on |String|.
 \\
 \begin{lstlisting}
   "  This is a string  !   ".remove_all_whitespace

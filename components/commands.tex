@@ -76,10 +76,8 @@
 % inserting figures
 \newcommand{\insertfigure}[5]{ % Filename, Caption, Label, Width percent of textwidth, Source
 	\begin{figure}[htbp]
-		\begin{center}
+	\centering
 			\includegraphics[width=#4\textwidth]{#1}
-		\end{center}
-		\vspace{-0.4cm}
 		\caption{#2}
 		\label{#3}
 		\captionsetup{font={it}}
