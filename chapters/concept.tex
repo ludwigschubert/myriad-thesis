@@ -6,9 +6,91 @@ In this chapter the architecture of the proposed system is motivated and its dev
 \section{Functional Analysis}
 \label{section:FunctionalAnalysis}
 
-\pagebreak
-\subsection{The Myriad Model of ABMC}
+Email is used a lot as an organizational tool instead of the mere letter-like two person communication medium that it was set out to be. A person might use email to figure out a good time for a meeting, solicit comments on his work, or even just organize a party. I will call this kind of communication \gls{abmc}. Yet, the use of email as a tool of \gls{abmc} becomes impractical when the number of contacted individuals grows too large, resulting in repetitive work and error-prone copy-paste techniques. Users are faced with a trade-off between effort and personalization -- composing individual emails versus sending out an impersonal mass email.
+
+\subsection{Limitations of current systems}
+
+When observing the current systems for handling \gls{abmc} -- the aforementioned mail merge and customer support systems, as well as ordinary personal email clients -- a list of problem areas can be observed.
+
+\begin{description}
+
+\item[Perceived Personalization:] Most current email software does not provide sophisticated tools for automated email personalization. Simple placeholders, which are widely used, constitute a very basic and - when used exclusively - outdated way of personalizing emails. As the personalization of messages may play a vital role in encouraging responses [2][3][4], users may be reluctant to compromise in this area and opt for time-consuming, manual workflows instead.
+
+\item[Message Reusability:] When communicating with a large group of individuals about the same or related subjects, automated or assisted reuse of text segments is crucial for increasing efficiency. In many cases, email software offers little support to users looking to reduce repetitive work. While reuse of existing text is possible, it is not explicitly supported by most. Many users resort to cumbersome copy-and-paste techniques, which eventually become impractical as the numbers of text elements and contacts increase.
+
+\item[Automation:] Existing software provides very little means for automation beyond simple auto-responders. Customer Support software sometimes features more sophisticated tools, but during the research no solution was found that allows the flexibility of rule based automation, while truly ensuring the resulting emails make sense in the context of the conversation.
+
+\item[Information extraction:] Most email clients do not provide an integrated and structured way of capturing information from email conversations. This may induce users to manually transfer data to other software, e.g. a spreadsheet application, while losing the direct connection to the message from which information was extracted.
+
+\item[Status visualization:] When handling large-scale conversations, it may prove difficult for the user to keep track of the current state of affairs. Appropriate visualization of both individual and aggregated conversation state may raise awareness and decision-making ability on part of the user, resulting in improved allocation of human attention, less frustration, and fewer errors.
+
+\end{description}
+
+\subsection{Resulting Requirements for an Improved System}
+
+Based on the identified shortcomings of current software in the context of \gls{abmc}, the following requirements should be fulfilled by a software prototype aimed at improving \gls{abmc}.
+
+\begin{description}
+
+\item[Perceived Personalization:] Messages created by the system should be indistinguishable from ones typed manually by the user. Generated messages are required to achieve resemblance to human authored messages in \emph{form}, given human authored \emph{content}.
+
+\item[Message Reusability:] Reusing past messages, decisions and actions is the key to higher performance and must be at the heart of the system. If not entirely automated, the system should store past messages and actively suggest them for reuse when appropriate.
+
+\item[Automation:] Informational objects - such as contacts and messages - should be handled without further user intervention whenever possible. Automation rules should be easy to setup and monitor. Automation may never result in breaking the continuity of the conversation or generally doubting the personal origin of the received message.
+
+\item[Information extraction:] Structured information capture has to supported in place, and be automated as far as possible. Users should be able to easily export captured information to general purpose software.
+
+\item[Status visualization:] Individual conversations should be assigned a state, like in a ticketing system, that clearly identifies the next action that needs to be taken. Conversations should be able to be grouped, sorted, and filtered by this status.
+
+\end{description}
+
+In addition to lifting these limitations, the following requirement was added to make partial usage of Myriad possible, and prevent duplication of existing functionality:
+
+\begin{description}
+
+\item[Interoperability:] The system needs to interface with general purpose software. Import and export of data should be sufficiently straightforward, enabling the user to use powerful general purpose software for the manipulation of their data. This means data sholud be user accessible, editable with known tools and seamlessly integrate back into Myriad.
+
+\end{description}
+
+\subsection{The ``Myriad'' Model of \gls{abmc}}
+
+In order to determine which aspects of these requirements are best handled by the user, an automated system, or human assistants, we developed a model of the process steps involved, and artifacts generated in \gls{abmc}.
+
 \insertfigure{figures/myriad_model.pdf}{The Myriad Model decomposes ABMC into distinct substeps to allocate them to different actors.}{Myriad-Model}{1}{Own illustration}
+
+The steps of one iteration of the model are given below. We assume that the user has initially sent out a mailmerge mass email to a list of recipients at the beginning of the campaign.
+
+\subsubsection*{Incoming Emails}
+
+The user receives replies from his recipients, which need to be separated from his non-campaign related emails. This can and should be automated.
+
+\subsubsection*{\emph{Extract}}
+
+The data within the replies needs to be extracted and categorized to be actionable. A user will initially want to define a data scheme, but then assistants or NLP algorithms can take over the work of actually extracting the email's data into this scheme.
+
+\subsubsection*{Schematic Data}
+
+The extracted data needs to be stored in a way that it enables the user to use it both for himself and to drive further the email campaign from which they originated.
+
+\subsubsection*{\emph{Select}}
+
+Based on the extracted data, the user needs to select subgroups of the recipients to send the next message to. This needs to be done by the user, as this step decides on the actual content of the campaign, but, since the system knows the history and content of the campaign, can be aided by automated suggestions on reusing existing messages.
+
+\subsubsection*{Message Templates}
+
+The system needs to allow creation of message templates, as well as store a pre created set of them for reuse. The templating system needs to provide capabilities to make message templates fully reusable across different recipients.
+
+\subsubsection*{\emph{Personalize}}
+
+When a message template has been chosen or created for a certain group of recipients, the system uses the extracted data and context information to personalize the message, such as resolving placeholders or adding the conversation history at the end of the message.
+
+\subsubsection*{Outgoing Emails}
+
+The system creates individual, personalized emails for every recipient. It should not use BCC’ing or multiple adressees, as this would have a negative impact on the perceived personalization.
+
+\subsubsection*{\emph{Review}}
+
+In order to guarantee conversation continuity, outgoing emails should be checked both for internal consistency after placeholder resolving and consistency within the context of the conversation. This can be done by assistants, as it doesn’t require domain knowledge.
 
 \section{Product Functions}
 
@@ -27,11 +109,22 @@ In this chapter the architecture of the proposed system is motivated and its dev
 
 \subsection{Client Side}
 
-\subsection{Backend Service Connections}
+\subsection{Interoperability}
+
+People tend to resist changing their habits when it comes to software usage (TODO), thus we want to enable users to stick to their familiar software and user interfaces as much as possible. We believe that combining general purpose tools into specific workflows is an underrated design principle that has proven itself countless times, such as within unix’s shells, spreadsheet applications, or file managers.
+Three specific instances where interoperability with general purpose tools was chosen over a proprietary implementation in the myriad prototype are listed below.
 
 \subsubsection{Google Mail}
 
-\subsubsection{Google Docs}
+To allow users to change their existing workflow as little as possible, we integrated labeling in Gmail with Myriad. A user can keep his primary workflow in his personal email client, while only labeling specific emails. Those are automatically imported into Myriad and can then be processed either by automated rules or with the help of an assistant. Rules built into Gmail even allow for fully automated labelling through Gmail’s FIlters, a rule system the user is already familiar with.
+
+\subsubsection{Google Docs Spreadsheets}
+
+Myriad doesn't require its users to store their data in a special database or on a Myriad's service at all. A simple Google Docs Spreadsheet acts as a database behind Myriad's personalization features. Many users already have their data in spreadsheet form, or can easily export to it, when they begin their campaigns. The spreadsheet makes the data store user accessible and can be manipulated using tools they already know. A user can also use his knowledge of spreadsheet software to build advanced personalization features based on arbitrary criteria without having to learn a query language that's custom to the email system.
+
+\subsubsection{Google Docs Forms}
+
+In certain scenarios a user doesn’t take issue with recipients knowing that they are collecting information from a big number of people. In such a situation we received a request for embedding forms, that would input data directly into Myriad’s database. Relying on a spreadsheet as a data source made this trivial, as Google Docs provides HTML forms which we could integrate directly.
 
 
 \section{System Design}
