@@ -5,12 +5,61 @@ In this chapter Myriad's initial goals will be reiterated and contrasted with re
 
 \section{Comparison with Initial Goals}
 
-\section{Observed Use Cases}
+As mentioned in \autoref{section:Goals}, the goals behind Myriad were to provide users with an email workflow tool that improves the tradeoff between efficiency and personalization in \gls{abmc}, and is simple and interoperable enough for the average user to incorporate into their email workflow.
 
-\subsection{Recruiting Exchange Students for one of the Most Desired Universities of the World}
+To evaluate if Myriad achieved these goals, we gave access to the system to other Stanford HCI graduate students, two Stanford Professors and the Startup Accelerator StartX. This allowed us to gather feedback and real world usage from the background of conducting surveys, class and general administration as well as professional business usage.
+All testers could use their own email accounts with the system and at first explored the system under guidance. We had no formal evaluation metric except to see how tester efficiency improved and feedback on whether they found Myriad helpful for their email campaign.
 
-\subsection{Requesting paper Reviews for a Journal}
+\section{Overall Results}
 
-\subsection{Managing Incoming Class Administration Emails}
+Most testers successfully completed their one or more email campaigns. In the case of Class Administration and Reviewer Requests, additional interoperability features were built into the Myriad prorotype during the evaluation to help testers complete their campaign.
 
+All reported an increase in efficiency after an initial phase of getting used to the system, that is while efficiency was initially decreased due to the new environment, the use of the system resulted in a net gain of time.
+In addition to self report, we also surveyed the ratio of message templates to emails as an approximation of efficiency increase.
+
+All testers were inspired by the potential of the system, even though various use cases required building additional interoperability features ``live'' during the evaluation.
+
+\section{Recruiting Exchange Students for one of the Most Desired Universities of the World}
+
+One of the original motivations for building Myriad was a campaign to recruit exchange students for a visiting researcher position. The first time this was achieved by manual copy and pasting of templates, in an ordinary personal email client. An a posteriori analysis of this campaign showed a lot of potential for improvement, as is shown in \autoref{figure:Emailflow}.
+
+\insertfigure{figures/emailflow.pdf}{In this illustration, lightning bolts indicate emails that didn’t receive reminder emails. Crossing arrows show inconsistent pathways; conversations that arrived at the same result through different messages. Squares with rounded corners represent message templates. Those had to be customized by hand for each recipient.}{figure:Emailflow}{1.0}{Own Illustration, created with data obtained by Christian Ikas}
+
+For the next iteration of this recruitment process we used Myriad exclusively. We had to create 14 message templates and an additional 14 messages for handling exceptions. The campaign handled a total of 295 emails, which corresponds to a ratio of approximately 1:10. Myriad ensured we didn’t miss sending a single reminder email. Automation also enabled us to add more students during the process, without explicitly having to send them emails, as the created rules took care of this automatically.
+
+Integration with Google Docs was used to enter scores of a quiz we held, which were later used to send different messages to students with a high score than to students with a low score.
+
+\section{Managing Incoming Class Administration Emails}
+
+To aid in administering a class with a high volume of FAQ-like requests, we added functionality to import emails into myriad just by setting a gmail label. Thus the professor giving the class merely had to label typical questions, which could then be processed by assistants. Everytime the assistants found they had insufficient information to answer a specific email, they asked the professor for this information only once, saving the replies in message templates. Those also served as a good starting point for producing a FAQ document for the next run of the class.
+
+\begin{quote}
+
+I use Myriad to manage a large volume of emails about the courses that I'm teaching. I tag the email with the campaign, and the system [and] assistant help me respond with one of a number of common responses.
+
+\begin{flushright}
+   -- Prof. Michael S. Bernstein, Stanford HCI Group
+\end{flushright}
+
+\end{quote}
+
+This evaluation was not completed, but during the time the system was used the ratio of message templates to emails was approximately 1:4.
+
+
+\section{Requesting paper Reviews for a Journal}
+
+Myriad was used to request paper reviews from a set of potential reviewers. We used Excel and a lookup function to define placeholder data which we used to embed paper abstracts and attach links to the original papers. Assistants processed the replies and extracted the reviews and attachments. Reminder emails were sent to reviewers who had agreed to review but didn’t by the original deadline automatically.
+To deal with exceptional cases, we implemented the ability to answer from your normal email inbox, while Myriad still understands that your reply is sent by you.
+
+\begin{quote}
+
+My main use: handling a special issue. Several hundred emails (literally) meant that an email view was impossible. Myriad’s structured view makes everything a whole lot easier. It still needs some polishing to be ready for prime time (like its workflow emphasis is a little constrained, and it needs better handling of formatting and attachments), but as a first draft, it's amazing. I hope it continues so I can use it more!
+
+\begin{flushright}
+   -- Prof. Scott R. Klemmer, Stanford HCI Group
+\end{flushright}
+
+\end{quote}
+
+The campaign used 9 message templates which handled 202 emails, corresponding to a ratio of approximatey 1:22. A part of the communcation was additionally performed manually.
 

@@ -1,19 +1,82 @@
 \chapter{Comparison with similar systems}
 \label{chapter:Comparison}
 
-In this chapter two major categories of software -- dedicated mailmerge systems, and customer support systems -- are introduced, which overlap in functionality with Myriad.
+In this chapter two major categories of email software which overlap in functionality with Myriad -- mail merge systems, and customer support systems -- are introduced.
 
-\section{Mailmerge Systems}
+Mailmerge systems focus on reaching a big target audience by providing personalization and technical tools for large email campaigns.
+Customer support systems are focussed on individuals and their conversations with the user.
+
+To gain these insights we examined a selection of services and products based both on recommendations from peers and freely available online reviews. These were sorted according to received web traffic\footnote{\url{https://www.compete.com}, \url{http://www.alexa.com}, \url{http://www.google.com/trends}}. Rather than the individual services, the categories of those services will be contrasted.
+
+\section{Mail Merge Systems}
 \label{section:MailmergeSystems}
 
-\subsection{CRM Systems}
+Mail merge systems automate the process of taking data, such as from a table or a database, and using it to personalize a prewritten template for multiple recipients. An example of this is sending out an email that allows a user to reset their password, but also an automatically generated marketing email, which includes the recipient's name in the greeting.
 
-\subsection{Dedicated Mailmerge Systems}
+Mail merge systems often contain advanced templating languages as described by \citet{mailmergeprogramming}. These contain placeholders, such as |first\_name| or |greeting|, but sometimes also offer conditional text -- usually through |if| statements -- and other control flow tools that are familiar from imperative programming languages. These tools focus on sending a large number of emails with enough personalization to get them through spam filters.
 
-\subsection{Backend Services}
+\subsection{Email Marketing Services}
 
-\subsubsection{Amazon SES}
-\subsubsection{SendGrid}
+Email marketing services use a mail merge system, usually in combination with \gls{html} templates and tracking functionality, to send commercial advertising to large groups of recipients. Most such services allow to create mass emails with a high degree of sophistication. Paired with straightforward import and management of contact lists, these capabilities allow users to put together an email campaign easily. However, these campaigns do not strive to appear as individual conversations -- that they are sent out to a large number of people is widely understood by their recipients. Campaigns initiated by those services are not meant to be bidirectional, and no software support exists in typical email marketing services for handling incoming replies.
 
+Popular examples include iContact\footnote{\url{http://www.icontact.com}} and MailChimp\footnote{\url{http://mailchimp.com}}.
+
+\subsection{Email Delivery Services}
+
+End-user email providers employ a variety of tactics to assign incoming emails a \gls{spam} score, and classify unwanted emails as such. The consequence of that is that a freshly connected \gls{smtp} server which suddenly starts sending a large amount of emails will quickly be classified as a \gls{spam}mer and be blocked.
+
+Thus a market opportunity arose for email delivery services. They account for commonly known \gls{spam} filtering techniques and rent their infrastructure to clients who want to send large amounts of email. Those email delivery providers guarantee a certain level of relevance of emails they send out, while circumventing as many \gls{spam} filtering criteria as possible.
+
+One of them is \gls{dns} whitelisting, a service provided by dnswl.org\citep{dnswl}. \gls{dns} whitelisting means that email providers query a list from dnswl.org to check whether the email server sending an email is whitelisted, which means it has shown not to send \gls{spam} in the past, or at least quickly mitigated any such case. Email delivery services have continuously shown to adhere to these practices in the past, and are consequently usually whitelisted.
+
+Other practices offered include the ``warming-up'' of an \gls{ip} address -- or simply using a shared one -- various authentication protocols on top of \gls{smtp} and plainly monitoring outgoing emails for their \gls{spam} score before actually sending them.
+
+Popular examples of email delivery services include Amazon's \acrfull{ses}\footnote{\url{http://aws.amazon.com/ses/}}, and SendGrid\footnote{\url{http://sendgrid.com}}, both of which offer the practices described above.
 
 \section{Customer Support Systems}
+
+Customer support systems can be divided into two categories, even though their functionality overlaps: \gls{crm} software, which focusses on the holistic view of a recipient over time and communication channels, and helpdesk software, which usually focusses on a ticket-level view of a customer, helping to solve a single issue that prompted the customer to initiate communication. This categorization is mostly historical, with modern helpdesk software offering a lot of \gls{crm} functionality as well.
+
+\subsection{CRM Software}
+
+\acrlong{crm} software focusses on establishing a shared history of interaction with a customer, potentially across multiple channels. With, for example, the establishment of social media as viable communication platforms for companies, \gls{crm} software has evolved to include these channels. Thus it is meant to create a holistic view of interactions with the customer, aiming at making marketing more relevant. A simple example would be recording a customer's choice of beverage on first contact, and rereading this information before a second meeting. In a more digital example it could include extracting a users buying preferences from their order history and using this information for a targeted email marketing campaign. Putting a heavy focus on contact management, \gls{crm}s are geared towards holistically managing customer contact rather than focusing on content in individual conversations.
+
+\gls{crm} software has steadily moved to \gls{saas} models in the last years, with 83\% of all companies expecting to switch to it eventually.\citep{saasindustryreport}
+
+Popular examples of \gls{crm} software include Salesforce\footnote{\url{https://www.salesforce.com}}, and SugarCRM\footnote{\url{http://www.sugarcrm.com}} -- which is available as a self-hosted, free ``community edition''. Market leaders for customized CRM solutions are SAP\footnote{\url{http://global.sap.com/germany/solutions/business-suite/crm/index.epx}} and Oracle\footnote{\url{http://www.oracle.com/us/solutions/crm/overview/index.html}} according to \citet{gartnercrm}.
+
+\subsection{Helpdesk Software}
+
+Helpdesk software is used after a customer has initiated a conversation by writing to a public email support address, or similar systems like forums. This creates a so called ``ticket'' in the helpdesk system. This ticket tracks the status of the customer's inquiry, and is  assigned to a person who is now responsible for it. The tool support of helpdesk software often includes a knowledge base for the workers, response templates to common inquiries, and workflows for escalating tickets to more senior workers. While some helpdesk software does allow for merging similar tickets, they generally focus on individual conversations, which limits their ability to minimize work redundancy.
+
+Popular examples of helpdesk software include ZenDesk\footnote{\url{http://www.zendesk.com}} and desk\footnote{\url{http://www.desk.com/help-desk/software}} -- a Salesforce product.
+
+
+\section{Summary}
+
+\autoref{Table:Similar} on page \pageref{Table:Similar} gives a comparison amongst the different systems. Our main finding was that individual products were highly evolved in their support of specific use cases. They all specialized on individual aspects of communication. There were no general purpose tools for handling both incoming and outgoing emails, no products with focus on data collection, and no general purpose tools.
+
+\begin{table}
+\label{Table:Similar}
+\ra{1.5}
+\centering
+\begin{tabular*}{\textwidth}{@{}@{\extracolsep{\fill}}ll@{}lll@{}ll@{}}
+  \toprule
+  \phantom{} & \phantom{} & \multicolumn{2}{@{}l}{ \textbf{Mail Merge Systems}} & \phantom{} & \multicolumn{2}{@{}l}{ \textbf{Customer Support Systems}} \\
+  \cmidrule{3-4} \cmidrule{6-7}
+  \emph{Feature} & \phantom{a} &  Email Marketing & Email Delivery & \phantom{a} & CRM       & Helpdesk \\
+  \midrule
+  Templates       & \phantom{} &  Yes          & n/a        & \phantom{} & Sometimes    & Sometimes   \\
+  Reusability     & \phantom{} &  Yes          & n/a        & \phantom{} & Sometimes    & Yes   \\
+  Placeholders    & \phantom{} &  Yes          & n/a        & \phantom{} & Sometimes    & Sometimes   \\
+  Auto-Responders & \phantom{} &  n/a          & n/a        & \phantom{} & Sometimes    & Yes   \\
+  Import Contacts & \phantom{} &  Yes          & n/a        & \phantom{} & Yes          & n/a         \\
+  Incoming Email  & \phantom{} &  No & n/a        & \phantom{} & Sometimes    & Yes   \\
+  Status Tracking & \phantom{} &  Read/Unread  & n/a        & \phantom{} & No           & Yes   \\
+  Sharing         & \phantom{} &  n/a          & n/a        & \phantom{} & Yes          & Yes   \\
+  Mass Email      & \phantom{} &  Yes          & Yes        & \phantom{} & No           & No   \\
+  \bottomrule
+\end{tabular*}
+\caption{A comparison of similar systems}
+\end{table}
+
