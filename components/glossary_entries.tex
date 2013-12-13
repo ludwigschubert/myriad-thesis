@@ -1,7 +1,6 @@
 % = Commands for suppressing page numbers for unused glossary entries
 
 \newcommand*{\glsgobblenumber}[1]{}
-% \renewcommand*{\glsgobblenumber}[1]{#1}% uncomment for testing
 
 \makeatletter
 %% lockstep's code
@@ -44,6 +43,8 @@
 
 \lsge{deployment}{Deployment}{The process of moving software that is developed on a local machine to a remote server.}
 \lsge{django}{Django}{A popular Python web application framework.}
+\lsge{bundler}{Bundler}{A Ruby dependency manager whose packages are called ``gems''.}
+\lsge{gem}{Gem}{A \gls{bundler} Package.}
 \lsge{javascript}{JavaScript}{The standard client-side script programming language used in web development.}
 \lsge{coffeescript}{CoffeeScript}{A programming language that transcompiles to JavaScript. Uses a modern syntax similar to Ruby or Python.}
 \lsge{sproutcore}{SproutCore}{A popular JavaScript web application framework, a precursor to Ember.js.}
@@ -74,13 +75,15 @@
 \lsad{bcc}{BCC}{Blind Carbon Copy}
 \lsad{php}{PHP}{PHP: Hypertext Preprocessor}
 \lsad{cc}{CC}{Carbon Copy}
+\lsad{crud}{CRUD}{Create, Read, Update, and Destroy}
 \lsad{crm}{CRM}{Customer Relationship Management}
 \lsad{dns}{DNS}{Domain Name System}
+\lsad{dsl}{DSL}{Domain Specific Language}
 \lsad{hci}{HCI}{Human-Computer Interaction}
 \lsad{http}{HTTP}{HyperText Transfer Protocol}
 \lsad{html}{HTML}{HyperText Markup Language}
 \lsad{css}{CSS}{Cascading Style Sheets}
-\lsad{ror}{RoR}{Ruby on Rails}
+\lsad{ror}{Rails}{Ruby on Rails}
 \lsad{saas}{SaaS}{Software as a Service}
 \lsad{sql}{SQL}{Structured Query Language}
 \lsad{ui}{UI}{User Interface}
@@ -90,8 +93,8 @@
 \lsad{uml}{UML}{Unified Modeling Language}
 \lsad{url}{URL}{Uniform Resource Locator}
 \lsad{coc}{CoC}{Convention over Configuration}
-\lsad{dry}{DRY}{Don't Repeat Yourself, contrast: WET}
-\lsad{wet}{WET}{Write Everything Twice, also: We Enjoy Typing, contrast: DRY}
+\lsad{dry}{DRY}{Don't Repeat Yourself}
+\lsad{wet}{WET}{Write Everything Twice}
 \lsad{orm}{ORM}{Object-relational Mapper}
 \lsad{ses}{SES}{Simple Email Service}
 \lsad{ai}{AI}{Artificial Intelligence}

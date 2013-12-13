@@ -15,9 +15,9 @@ Future Web Applications will most likely go further in their separation of conce
 
 \subsection{Software Stacks}
 
-The client-side stack includes the webbrowser and \gls{javascript} engine to interpret the \gls{html} and \gls{javascript} files from the webserver.
+The client-side stack includes the web browser and \gls{javascript} engine to interpret the \gls{html} and \gls{javascript} files from the web server.
 
-The server-side stack is tradtionally an assortment of tools, starting with a \gls{http} server such as \gls{apache} or \gls{nginx}, which handle static file serving. The \gls{http} server forwards requests for dynamic content to a web server, such as \gls{fastcgi} or \gls{unicorn}. These may optionally have a middleware handler for web middlewares such as \gls{rack}, or forward directly to the web framework, which handles the business logic, database connections, etc.
+The server-side stack is traditionally an assortment of tools, starting with a \gls{http} server such as \gls{apache} or \gls{nginx}, which handle static file serving. The \gls{http} server forwards requests for dynamic content to a web server, such as \gls{fastcgi} or \gls{unicorn}. These may optionally have a middleware handler for web middleware such as \gls{rack}, or forward directly to the web framework, which handles the business logic, database connections, etc.
 
 Apart from this primary web stack many web applications rely on additional services running on the backend server. A simple example would be an additional Key-Value store for caching purposes, such as \gls{redis} or \gls{mongodb}. But infrastructure software, such as the common unix scheduler \gls{cron}, backup tasks, \gls{smtp} servers, or background workers, are also part of the backend stack. All of these parts contribute to the end result and have to be managed and integrated in a process called deployment. The solution I chose for automating deployment is explained in \autoref{subsection:Deployment}.
 
@@ -25,13 +25,13 @@ Apart from this primary web stack many web applications rely on additional servi
 
 \acrfull{ror} is a \gls{ruby} based web application framework. As of \today, according to \citet{builtwith}, it is the \nth{13} popular framework for building websites. In the top 10.000 websites, \gls{ror}'s ranked \nth{6} though, showing its success in building more successful websites. Famous examples of websites built at least partly on \gls{ror} include Groupon, Twitter and Github\citep{ror}.
 
-Originally \gls{ror} was a spin-off of \gls{basecamp} by 37signals, that David Hansson extracted in early 2004 and released as Open Source.\citep{railsinterview} By February 2005 he started accepting work from other developers. \gls{ror} gained popularity when companies like Twitter announced they were using it\citep{forbestwitterror}, and when Apple included \gls{ror} in their operating system \gls{macosx}.
+Originally \gls{ror} was a spin-off of \gls{basecamp} by 37signals, that David Hansson extracted in early 2004 and released as Open Source.\citep{railsinterview} By February 2005 he started accepting work from other developers. \gls{ror} gained popularity when companies like Twitter announced they were using it\citep{forbestwitterror}, and when Apple included \gls{ror} in their operating system \gls{macosx}. \gls{ror} is integrated into the Ruby ecosystem as a \gls{gem}, meaning it can be installed via the common dependency manager \gls{bundler}
 
-A probable cause for \gls{ror}'s enthusiastic reception in the developer community is its focus on three developer-friendly principles: \acrfull{coc}, \gls{dry} and its suitablity for Agile Development.\citep{agilewebdev}
+A probable cause for \gls{ror}'s enthusiastic reception in the developer community is its focus on three developer-friendly principles: \gls{coc}, \gls{dry} and its suitability for Agile Development.\citep{agilewebdev}
 
 \subsubsection{\acrlong{coc}}
 
-A traditional view of software development includes a trade-off: flexibilty versus simplicity. \acrshort{coc} aims to resolve this tradeoff by designing software to behave correctly for most situations without requiring explicit configuration by developers, while allowing this configuration once additional flexibilty is needed. This paradigm not only helps to eliminate a lot of ``boilerplate code'', but also aids collaborative development: if, for example, a \gls{ror} project is always arranged in a certain standardized folder structure, other \gls{ror} developers will have little trouble finding their way in another developer's project, and \gls{ror} can automatically load model classes without explicit |require| or |import| statements. This behavior is called autoloading. If, on the other hand, a project requires extensive use of custom non-model classes, \acrshort{coc} allows a developer to break this structure and still profit from autoloading by explicitly adding his classes to the autoload path.\citep{railsautoloading}
+A traditional view of software development includes a trade-off: flexibility versus simplicity. \acrshort{coc} aims to resolve this tradeoff by designing software to behave correctly for most situations without requiring explicit configuration by developers, while allowing this configuration once additional flexibility is needed. This paradigm not only helps to eliminate a lot of ``boilerplate code'', but also aids collaborative development: if, for example, a \gls{ror} project is always arranged in a certain standardized folder structure, other \gls{ror} developers will have little trouble finding their way in another developer's project, and \gls{ror} can automatically load model classes without explicit |require| or |import| statements. This behavior is called autoloading. If, on the other hand, a project requires extensive use of custom non-model classes, \acrshort{coc} allows a developer to break this structure and still profit from autoloading by explicitly adding his classes to the autoload path.\citep{railsautoloading}
 
 \subsubsection{\acrlong{dry}}
 
@@ -48,6 +48,7 @@ In \gls{ror} \acrlong{dry} is upheld quite thoroughly. Examples include the \acr
 The term \acrfull{wet} has since been coined to denote a deviation from \gls{dry} principles. \citep{wet}
 
 \subsubsection{Agile Development}
+\label{subsub:agile}
 
 While Agile Development is a complex topic, two core claim of the agile principles are that code has to be \emph{quick to write} to rapidly deliver useful software \citep[Principle 1]{martin2003agile} and \emph{quick to change} to adapt to changing requirements \citep[Principle 2]{martin2003agile}. One can easily see how the aforementioned principles fit into this picture: \acrshort{coc} allows developers to write a lot less code upfront, while \acrshort{dry} allows changes to be executed in a single place in the code.
 
@@ -57,32 +58,97 @@ While Agile Development is a complex topic, two core claim of the agile principl
   rails !\emph{generate scaffold} \textcolor{blue}{User} \textcolor{NavyBlue}{name birthday}!:date
 \end{lstlisting}
 
-This command generates a model class |User| with a field |name| of type |String| and a field |birthday| of type |Date|, a database migration for that model, a controller to manipulate it, views to view and manipulate it, as well as an empty test files for model, controller and views. The resulting application can be run without further configuration and provides a starting point for further development:
+This command generates a \emph{model class} |User| with a field |name| of type |String| (the implicit default) and a field |birthday| of type |Date|, a \emph{database migration} for that model, a \emph{controller} to manipulate it, \emph{views} to show and manipulate it, as well as empty \emph{test files} for model, controller and views. The resulting application can be run without further configuration and provides a starting point for further development:
 
 \insertfigure{figures/rails_scaffold.png}{A list of users and an ``Edit User'' form, generated by \gls{ror} scaffolding.}{RailsScaffoldNewUser}{1.0}{Own Screenshot}
 
-\subsection{Components of \gls{ror}}
+\subsection{Components of \acrlong{ror}}
 
-TODO?
+\gls{ror} is built in a modular fashion, where each component has clear uses and responsibilities.
+An incoming request from a client is forwarded via the web server to the |dispatcher| or \emph{router}. The dispatcher is configurable via the |routes| file, which contains a \gls{dsl} for routing requests to their respective |controller|s. These have |action|s, which trigger rendering, delegation, mail delivery or redirecting behaviors. Inside the |action|s, controllers have access to ActiveRecord for \gls{crud} operations on data. Inside the views, the rendering engine has access to ActionView Helper methods, such as url creation and value transformation methods.
+
+Let's walk through an example request to the server we scaffolded in \autoref{subsub:agile}. The dispatcher is configured with the following routes file:
+ 
+\begin{lstlisting}[escapechar=!]
+Test::Application.routes.draw do
+    resources :users
+end
+\end{lstlisting}
+
+|Resources| is a \gls{coc} shortcut for the routes in \autoref{tab:resources}, enabling standard \gls{crud} behavior for |User| objects.
+
+\begin{table}
+\ra{1.5}
+\centering
+\begin{tabular*}{\textwidth}{@{}@{\extracolsep{\fill}}llll@{}}
+  \toprule
+   Prefix & Verb & URI Pattern & Controller\#Action \\
+  \midrule
+      users  & GET    & \textbf{/users(.:format)} & users\#index     \\
+  \phantom{} & POST   & /users(.:format)          & users\#create    \\
+   new\_user  & GET    & /users/new(.:format)      & users\#new     \\
+  edit\_user  & GET    & /users/:id/edit(.:format) & users\#edit    \\
+       user  & GET    & /users/:id(.:format)      & users\#show    \\
+  \phantom{} & PATCH  & /users/:id(.:format)      & users\#update    \\
+  \phantom{} & PUT    & /users/:id(.:format)      & users\#update    \\
+  \phantom{} & DELETE & /users/:id(.:format)      & users\#destroy  \\
+  \bottomrule
+\end{tabular*}
+\caption{A list of routes created by the User scaffolding}
+\label{tab:resources}
+\end{table}
+
+\gls{ror}'s development web server |WEBRick| runs on port 3000 by default, so assuming a developer will point his web browser at \url{http://localhost:3000/users} the dispatcher will recognize this GET request as a valid route -- the first, bold, one in \autoref{resources}.
+It will then continue to load and dispatch the request to a controller named |UsersController| -- once again, \gls{coc} inferring the controller name from the resource, and how to autoload it from convention on where in the app directory it is defined -- on the |index| action. Now while scaffolding generated a UsersController and an index action for us, the action contains just one line:
+
+\begin{lstlisting}[escapechar=!]
+  def index
+    @users = User.all
+  end
+\end{lstlisting}
+
+However, in the browser a list of users is displayed. What happens here is that by convention the controller looks for a view named after the current action and renders it implicitly. This view has access to the |@users| variable defined in the controller and is thus able to render the requested page.
+
+This process requires developers to get to know a lot of assumptions, but saves from writing a lot of boilerplate code over and over again. In fact, there's a quite popular \gls{gem} called ``CanCan'' which introduces a controller macro called |load\_resource|. When this macro is included in the top level Controller class, ApplicationController, common ActiveRecord database fetches like the scaffolded \lstinline{@users = User.all} are automated entirely, so the controller methods are effectively empty. While most applications obviously need more logic to be interesting, this is an interesting experiment to see just how far \gls{coc} can be pushed.
 
 \insertfigure{figures/rails_architecture.png}{Ruby on Rails Architecture Diagram}{RailsArchitecture}{.75}{Picasa User ``Niwatori''}
 
 \section{Email}
 
-
 \subsection{RFC 2822}
 
-Email is standardized as the ``Internet Message Format'' in RFC 2822 \citep{email}.
+Email is standardized as the ``Internet Message Format'' in RFC 2822 \citep{email}. Part of this standardization includes the syntax of an email, which is not usually visible to users. The following is an example message as defined in \citep[44]{email}.
+
+\begin{lstlisting}
+  From: John Doe <jdoe@machine.example>
+  To: Mary Smith <mary@example.net>
+  Subject: Saying Hello
+  Date: Fri, 21 Nov 1997 09:55:06 -0600
+  Message-ID: <1234@local.machine.example>
+  
+  This is a message just to say hello.
+  So, "Hello".
+\end{lstlisting}
+
+An email is thus made up of a |header| and a |body|, with the header containing meta data |fields| and the body containing the content of the message. A set of these header fields is defined in \citep{email}, but it is also common to see servers add custom header fields (as specified in \citep[3.6.8]{email}), usually starting with ``x-'' to make it clear that these headers are optional. For example, my hoster ``Host Europe'' tests emails for their likelihood to be \gls{spam}, and includes the reasoning about the message in custom header fields such as |X-HE-Spam-Score| and |X-HE-Spam-Report|. It is important, however, that email servers are not required to honor these custom header fields, and often strip them from a message. One can also infer from this description that a lot of modern features one is used to from modern email clients, such as hiding quoted text, threading conversations, or even file attachments, are not part of the official email standard and built on top of this systems, making implementation non-trivial at times.
 
 \subsection{IMAP \& SMTP}
 
-Hello \gls{imap}.
+There are two main protocols dealing with email: \gls{smtp} for sending emails, and \gls{imap} for retrieving them. Both are application layer protocols defined by \citet{smtp} and \citet{imap} respectively.
 
+When sending an email via \gls{smtp}, it is wrapped in an ``envelope'' that includes the sender email address, the recipients addresses, and finally the full email (both headers and content).
 
-\section{Workflow Systems}
+The actual sending process is a many steps handshake process, meaning the receiving server has to confirm every command send. The simplest case of sending a message to a single recipient would interact as follows:
 
+Client sends |MAIL| command with the envelope sender to server.
+Server replies with a 200 status code (like HTTP) to accept the send request, or with a 500 status code to reject it.
+Client sends |RCPT| command with the envelope recipient to server.
+Server replies with a 200 status code to accept the recipient if it knows the address or knows how to relay it, or with a 500 status code to reject it.
+Client sends |DATA| command.
+Server instantly replies with a 200 status code to signal it's ready to receive data.
+Client sends the message data.
+Server replies with a 200 status code to signal the successful reception of the message data, or with a 500 status code to signal an error during transmission.
 
-\subsection{History of Workflow Systems}
+If the server can't deliver the message itself, it will assume the role of the client and relay it to a server that it thinks can deliver the message.
 
-
-\subsection{Famous Examples}
+An interesting detail of this implementation is that the envelope sender and recipients are completely independent of the message headers' values. While it's technically possible for a \gls{smtp} server to reject a mismatch between envelope and message headers, it is not common practice. When discovering this, we had a lot of fun sending spoofed emails around to our peers, which seemingly were sent by professors or parents. This underlines the importance of cryptographic signatures in emails for sender verification.
