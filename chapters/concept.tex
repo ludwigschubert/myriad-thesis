@@ -6,7 +6,7 @@ In this chapter the architecture of the proposed system is motivated and its dev
 \section{Functional Analysis}
 \label{section:FunctionalAnalysis}
 
-Email is used a lot as an organizational tool instead of the mere letter-like two person communication medium that it was set out to be. A person might use email to figure out a good time for a meeting, solicit comments on his work, or even just organize a party. I will call this kind of communication \gls{abmc}. Yet, the use of email as a tool of \gls{abmc} becomes impractical when the number of contacted individuals grows too large, resulting in repetitive work and error-prone copy-paste techniques. Users are faced with a trade-off between effort and personalization -- composing individual emails versus sending out an impersonal mass email.
+Email is used a lot as an organizational tool instead of the mere letter-like two person communication medium that it was set out to be. A person might use email to figure out a good time for a meeting, solicit comments on his work, or even just organize a party. I will call this kind of communication \acrlong{abmc}. Yet, email as a tool for \gls{abmc} becomes impractical when the number of contacted individuals grows too large, resulting in repetitive work and error-prone copy-paste techniques. Users are faced with a trade-off between effort and personalization -- composing individual emails versus sending out an impersonal mail merge.
 
 \subsection{Limitations of current systems}
 
@@ -14,7 +14,7 @@ When observing the current systems for handling \gls{abmc} -- the aforementioned
 
 \begin{description}
 
-\item[Perceived Personalization:] Most current email software does not provide sophisticated tools for automated email personalization. Simple placeholders, which are widely used, constitute a very basic and - when used exclusively - outdated way of personalizing emails. As the personalization of messages may play a vital role in encouraging responses [2][3][4], users may be reluctant to compromise in this area and opt for time-consuming, manual workflows instead.
+\item[Perceived Personalization:] Most current email software does not provide sophisticated tools for automated email personalization. Simple placeholders, which are widely used, constitute a very basic and - when used exclusively - outdated way of personalizing emails. As the personalization of messages plays a vital role in encouraging responses\citep{SCHAEFER01111998}, users may be reluctant to compromise in this area and opt for time-consuming, manual workflows instead. \citep{Joinson2007}
 
 \item[Message Reusability:] When communicating with a large group of individuals about the same or related subjects, automated or assisted reuse of text segments is crucial for increasing efficiency. In many cases, email software offers little support to users looking to reduce repetitive work. While reuse of existing text is possible, it is not explicitly supported by most. Many users resort to cumbersome copy-and-paste techniques, which eventually become impractical as the numbers of text elements and contacts increase.
 
@@ -54,7 +54,8 @@ In addition to lifting these limitations, the following requirement was added to
 
 \subsection{The ``Myriad'' Model of \gls{abmc}}
 
-In order to determine which aspects of these requirements are best handled by the user, an automated system, or human assistants, we developed a model of the process steps involved, and artifacts generated in \gls{abmc}.
+From the beginning of the project it felt natural to not only develop a tool for single users, but for collaborative usage, where users and assistants would take over roles that could not easily be automated, mirroring the roles secreterial assistants usually assume as described by \citet{Erickson2008a}.
+In order to determine which aspects of the requirements are best handled by users, an automated system, or human assistants, a model of the process steps involved, and artifacts generated in \gls{abmc} was created.
 
 \insertfigure{figures/myriad_model.pdf}{The Myriad Model decomposes ABMC into distinct substeps to allocate them to different actors.}{Myriad-Model}{1}{Own illustration}
 
@@ -92,13 +93,53 @@ The system creates individual, personalized emails for every recipient. It shoul
 
 In order to guarantee conversation continuity, outgoing emails should be checked both for internal consistency after placeholder resolving and consistency within the context of the conversation. This can be done by assistants, as it doesn’t require domain knowledge.
 
+\subsection{Prototyping Approaches}
+
+During the prototyping phase I created lots of wireframes that were then used in paper prototyping.
+The first four screen that were considered focused on placeholders (\autoref{pp_placeholders}), template creation(\autoref{pp_templates}), status visualization(\autoref{pp_status}), and message reuse(\autoref{pp_reuse}).
+
+
+\insertfigure{figures/paper_prototype_1.pdf}{Using placeholders.}{pp_placeholders}{.8}{Own illustration}
+
+\insertfigure{figures/paper_prototype_2.pdf}{Creating templates}{pp_templates}{.8}{Own illustration}
+
+\insertfigure{figures/paper_prototype_3.pdf}{Visualizing conversation status.}{pp_status}{.8}{Own illustration}
+
+\insertfigure{figures/paper_prototype_4.pdf}{Reusing templates.}{pp_reuse}{.8}{Own illustration}
+
+These paper protoypes were then converted to full resolution clickable protypes in Apple's presentation software Keynote. They allowed testers to get a feeling for the core flow of Myriad. (\autoref{wireframe_filter}, \autoref{wireframe_search}, \autoref{wireframe_extraction}, and \autoref{wireframe_match})
+
+\insertfigure{figures/wireframe_filter.pdf}{A first imagination of filtering conversations.}{wireframe_filter}{.8}{Own illustration}
+
+\insertfigure{figures/wireframe_search.pdf}{A second iteration on a filtering interface.}{wireframe_search}{.8}{Own illustration}
+
+\insertfigure{figures/wireframe_extraction.pdf}{Showing a conversation, with a simple data extraction UI on the right.}{wireframe_extraction}{.8}{Own illustration}
+
+\insertfigure{figures/wireframe_match.pdf}{An ``activity stream'' kind of view, which shows new automation matches.}{wireframe_match}{.8}{Own illustration}
+
 \section{Product Functions}
+
+From the observations of the prototype testing sessions
+
+\subsection{Interoperability}
+
+Users tend to resist changing their habits when it comes to software usage, thus it seem desirable to enable users to stick with their familiar software and user interfaces as long as possible. Combining general purpose tools into specific workflows is a design principle that has proven itself countless times, such as within unix’s shells, spreadsheet applications, or file managers.
+Three specific instances where interoperability with general purpose tools was chosen over a proprietary implementation in the myriad prototype are listed below.
+
+\subsubsection{Google Mail}
+
+To allow users to change their existing workflow as little as possible, Gmail labels were integrated with Myriad. A user can keep his primary workflow in his personal email client, while only labeling specific emails. Those are automatically imported into Myriad and can then be processed either by automated rules or with the help of an assistant. Rules built into Gmail even allow for fully automated labelling through Gmail’s filters, a rule system that a user might already be familiar with.
+
+\subsubsection{Google Docs Spreadsheets}
+
+Myriad doesn't require users to store their data in a special database or on a Myriad's service at all. A simple Google Docs Spreadsheet acts as a data store behind Myriad's placeholder features. Many users already have their data in spreadsheet form, or can easily export to it, when they begin their campaigns. The spreadsheet makes the data store user accessible and can be manipulated using tools they already know. A user can also use his knowledge of spreadsheet software to build advanced personalization features based on arbitrary criteria without having to learn a query language that's custom to the email system.
+
+\subsubsection{Google Docs Forms}
+
+In certain scenarios a user doesn't take issue with recipients knowing that they are collecting information from a big number of people. In such a situation we received a request for embedding forms, that would input data directly into Myriad’s database. Relying on a spreadsheet as a data source made this trivial, as Google Docs provides HTML forms which we could integrate directly.
 
 
 \section{User Interface}
-
-
-\subsection{Prototyping Approaches}
 
 
 \section{Technical Analysis}
@@ -111,26 +152,18 @@ In order to guarantee conversation continuity, outgoing emails should be checked
 
 \subsection{Interoperability}
 
-People tend to resist changing their habits when it comes to software usage (TODO), thus we want to enable users to stick to their familiar software and user interfaces as much as possible. We believe that combining general purpose tools into specific workflows is an underrated design principle that has proven itself countless times, such as within unix’s shells, spreadsheet applications, or file managers.
-Three specific instances where interoperability with general purpose tools was chosen over a proprietary implementation in the myriad prototype are listed below.
+
 
 \subsubsection{Google Mail}
 
-To allow users to change their existing workflow as little as possible, we integrated labeling in Gmail with Myriad. A user can keep his primary workflow in his personal email client, while only labeling specific emails. Those are automatically imported into Myriad and can then be processed either by automated rules or with the help of an assistant. Rules built into Gmail even allow for fully automated labelling through Gmail’s FIlters, a rule system the user is already familiar with.
 
 \subsubsection{Google Docs Spreadsheets}
 
-Myriad doesn't require its users to store their data in a special database or on a Myriad's service at all. A simple Google Docs Spreadsheet acts as a database behind Myriad's personalization features. Many users already have their data in spreadsheet form, or can easily export to it, when they begin their campaigns. The spreadsheet makes the data store user accessible and can be manipulated using tools they already know. A user can also use his knowledge of spreadsheet software to build advanced personalization features based on arbitrary criteria without having to learn a query language that's custom to the email system.
 
 \subsubsection{Google Docs Forms}
 
-In certain scenarios a user doesn’t take issue with recipients knowing that they are collecting information from a big number of people. In such a situation we received a request for embedding forms, that would input data directly into Myriad’s database. Relying on a spreadsheet as a data source made this trivial, as Google Docs provides HTML forms which we could integrate directly.
 
 
 \section{System Design}
 
-\subsection{Database Schema}
 
-\subsubsection{Unusual Patterns}
-
-\subsection{Distribution of System Components}

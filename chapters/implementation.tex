@@ -64,7 +64,7 @@ Emails are instantiations of Templates. Their body doesn’t contain placeholder
 
 \subsubsection{FetchedEmail}
 
-|FetchedEmail| represents Emails that were fetched as raw text from an IMAP server. |FetchedEmail|s encapsulate their respective |RawMail|s.
+|FetchedEmail| represents Emails that were fetched as raw data from an IMAP server. |FetchedEmail|s encapsulate their respective |RawMail|s.
 
 \subsubsection{IncomingFetchedEmail}
 
@@ -161,15 +161,19 @@ In brief, our fetching process works as follows:
 
 
 
-\section{``Best Practices''}
+\section{``Interesting Practices''}
 
-During the development process we discovered a set of ``Best Practices'' that didn't seem to fit into any specific software development methodology.
+During the development process we discovered a set of ``Interesting Practices''\footnote{A wordplay on ``Best Practices'', an overused term to describe methods or practices that have produced good results repeatedly.} that didn't seem to fit into any specific software development methodology.
 
-\subsection{A fixed set of ruby core extensions}
+\subsection{Lean Workers with AbstractWorker}
 
-A dynamic language like ruby makes it trivially easy to reopen core classes. [citation needed] While initially the convenience seems awesome, it's easy to lose track of already implemented extensions, you risk colliding method names\footnote{Ruby 2.0 finally fixed this by introducing \emph{refinements}, a way to extend classes namespaced to the current module.}, and reusability is higher if one just packages those extensions as a new class.
+When faced with the task to build a DRY function to start worker threads for all workers, there was no simple way. Additionally, each worker needed a queue name as configuration. Having learned from ActiveModel, I built |AbstractWorker|. It takes care of generating queue names from the class names of it’s subclasses. The descendants method, which returns all subclasses, can be iterated over. This allows starting a worker thread for every queue. It also allowed extracting the ResqueDirector plugin into AbstractWorker, which starts those workers automatically in our Development environment. So one can simply subclass AbstractWorker and rest assured that worker threads will be started for the new subclass automatically, both in development and in production.
 
-However we did decide to keep a couple of our extensions, which we felt were both useful and felt idiomatic. Here's a list of them, together with explanations why we kept them even through multiple code cleanups:
+\subsection{A small, fixed set of core extensions}
+
+A dynamic language like ruby makes it trivially easy to reopen core classes.\footnote{By simply redefining a class one can extend it.} While initially this seems like a convenience, it's easy to lose track of already implemented extensions. One risks colliding method names\footnote{Ruby 2.0 finally fixed this by introducing \emph{refinements}, a way to extend classes namespaced to the current module.} and reusability is higher if the extension is packaged as a module which is then included where needed.
+
+However, we did decide to keep a set of our extensions, which we felt were both useful and idiomatic. Here's a list of them, together with explanations why we kept them even through multiple code cleanups:
 
 \subsubsection{String}
 
@@ -198,7 +202,7 @@ In our experience users often used ``First Name'' instead of ``first\_name'' and
 \end{lstlisting}
 
 
-\item[to\_bool] Once again an indication of working with badly specified protocols. This was needed after some Javascript libraries apparently disagree about how to encode |true| in a URL parameter.
+\item[to\_bool] Once again an indication of working with badly specified protocols. This was needed after some Javascript libraries apparently disagree about how to encode |true| in a \gls{url} parameter.
 \\
 \begin{lstlisting}
   ['true', 't', 'yes', 'y', '1'].map(&:to_bool).all?
@@ -255,15 +259,4 @@ In our experience users often used ``First Name'' instead of ``first\_name'' and
 \end{lstlisting}
 
 \end{description}
-
-\subsection{Lean Workers with AbstractWorker}
-
-We’ve built an AbstractWorker Superclass for our Resque Workers. Why?
-Basically I think Resque is awesome, but very, very basic.
-When faced with the task to build a DRY function to start worker threads for all our workers, I found no simple way. So now, AbstractWorker takes care of generating queue names form the Class names of it’s subclasses, and I can use the result of the descendants method (returns all subclasses) to iterate over and start a worker thread with the correct queue. It also allowed us to extract the ResqueDirector plugin, which starts those workers in our Development environment.
-
-\subsection{Monitoring Services}
-
-Monit is an awesome tool that you configure via a DSL that ensures all parts of your appliction keep running. The most common way for monit to monitor an application is that this application writes its Unix process ID into a specific file. This way monit can check if this process is still alive. Big applications like nginx or mysql already do this for us. For things like workers or the above mentioned rake idle task we need a custom solution. Imho it would be best to use a deamonizer wrapper appor script, that does the starting and PID-into-a-file-writing generically. I wasted a few hours on several approaches and couldn’t get this to work, unfortunately.
-So now our rake idle task writes it’s own PID file and is monit’d. Semi-awesome.
 
