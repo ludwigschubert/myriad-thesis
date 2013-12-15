@@ -34,16 +34,6 @@ The \code{Notification} class is a good example of the idiomatic \gls{ruby} code
   end
 \end{lstlisting}
 
-\section{rake db:validate}
-
-We had to perform a big number\footnote{\lstinline{cd ~/myriad/db/migrations && ls -l | awk '!/^d/\{print \}' | wc -l} returns 82 migrations.} of database migrations while already handling live tester's data. This data included our professor's emails, so I searched for a way to ensure our migrations and code changes would not create database records that would be considered invalid by the changed validation code, a problem that's not usually detected during a migration and will lead to hard-to-debug problems during usage. The solution we built is a rake task called ``db:validate''. It dynamically discovers all \gls{activerecord} classes and runs their validations on them. As part of the test suite it would be run against a copy of the production database before deploying a new release. While the actual class got more complicated to account for exceptional validation behavior, progress indication, and interactive deletion capabilities, the original formulation is still intriguingly simple.
-
-\begin{lstlisting}
-  def invalid_records
-    classes = ActiveRecord::Base.descendants
-    classes.flat_map{ |class| class.all.reject(&:valid?) }
-  end
-\end{lstlisting}
 
 \section{The hidden Monad pattern}
 

@@ -48,7 +48,7 @@ In addition to lifting these limitations, the following requirement was added to
 
 \begin{description}
 
-\item[Interoperability:] The system needs to interface with general purpose software. Import and export of data should be sufficiently straightforward, enabling the user to use powerful general purpose software for the manipulation of their data. This means data stored in Myriad should be user accessible, editable with commonly known tools and seamlessly integrate back into Myriad. 
+\item[Interoperability:] The system needs to interface with general purpose software. Import and export of data should be sufficiently straightforward, enabling the user to use powerful general purpose software for the manipulation of their data. This means data stored in Myriad should be user accessible, editable with commonly known tools and seamlessly integrate back into Myriad.
 
 \end{description}
 
@@ -117,9 +117,9 @@ These paper protoypes were then converted to full resolution clickable protypes 
 
 \insertfigure{figures/wireframe_match.pdf}{An ``activity stream'' kind of view, which shows new automation matches.}{wireframe_match}{.8}{Own illustration}
 
-\section{Product Functions}
+% \section{Product Functions}
+% TODO List of product functions? use case diagram?
 
-From the observations of the prototype testing sessions TODO
 
 \subsection{Interoperability}
 
@@ -139,8 +139,9 @@ Myriad doesn't require users to store their data in a special database or on a M
 In certain scenarios a user doesn't take issue with recipients knowing that they are collecting information from a big number of people. In such a situation we received a request for embedding forms, that would input data directly into Myriad’s database. Relying on a spreadsheet as a data source made this trivial, as Google Docs provides HTML forms which we could integrate directly.
 
 
-\section{User Interface}
-
+%\section{User Interface}
+% TODO Screenshots and walkthrough?
+%
 
 \section{Technical Analysis}
 
@@ -153,7 +154,6 @@ In certain scenarios a user doesn't take issue with recipients knowing that they
 \subsection{Interoperability}
 
 
-
 \subsubsection{Google Mail}
 
 
@@ -162,8 +162,23 @@ In certain scenarios a user doesn't take issue with recipients knowing that they
 
 \subsubsection{Google Docs Forms}
 
-
+The integration with Google Docs Forms comes almost for free with spreadsheet sync -- since a user can configure a form to append new entries to a spreadsheet, the user can simply sync this spreadsheet to Myriad and the data becomes available.
+Google doesn't offer an API that could be used to register for changes in a spreadsheet, so a simple polling functionality was included, which checks for changed data every 15 minutes. Thus, in interaction with Automation, Myriad can react to a new form submission form without further user interaction.
 
 \section{System Design}
 
+This section presents the results of iteration on both data modeling and deployment strategies. While here only the final state is presented, in \autoref{chapter:Implementation} and \autoref{chapter:UMLDiagrams} the evolution of these aspects of the system design is explored further. Also, the interaction between the core data model classes is explained in detail in \autoref{sec:Architecture}, while here I focus merely on the contained data.
+
+%\subsection{Data Modelling}
+
+\subsection{System Deployment}
+
+In \autoref{fig:deployment} the deployment and interaction of the different parts of the system is pictured. The Myriad server itself runs as a virtual machine on commodity hardware, so we had full control over the application environment during development. Automated deployment could be used to move the system to hosted servers for production. The client browser only interfaces with the \acrlong{ror} server via HTTP and \gls{ajax} to retrieve frontend webpages. An array of background services ensures the service continues to function even when the client is not logged in:
+
+For every client, an IMAP idle connection is held open to Google's Mail servers. If this connection receives notice of a new email, it triggers a background sync by enqueueing a Resque task. The service is monitored so the connection is restored if it closes at anytime.
+Sending Emails is also done through background jobs, so the user doesn't have to stay logged in during a potentially lengthy sending operation. A regular polling of the connected spreadsheets is also enqueued as background tasks. All tasks connect to the same database to transmit information. Row and table locks are used for synchronisation between tasks, and some custom bookkeeping logic optimizes task queues, to, for example, prevent checking the same email account for new mails directly after it has already been checked.
+
+OAuth is used for authentication with said Google Services. A centralized authentication service for all background tasks is used by storing OAuth tokens in the database, behind an interface that automatically checks the token's validity and requests newer tokens if they are needed.
+
+\insertfigure{figures/deployment.pdf}{The Myriad Webserver mediating between Client and Google Services}{fig:deployment}{1.0}{Own illustration}
 
