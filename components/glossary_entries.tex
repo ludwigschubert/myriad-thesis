@@ -15,14 +15,17 @@
     \@do@wrglossary{#2}%
   }%
 }
-%% new code; modified \glsaddall
-\newcommand{\glsaddallunused}[1][]{%
-  \edef\@glo@type{\@glo@types}%
-  \setkeys{glossadd}{#1}%
-  \forallglsentries[\@glo@type]{\@glo@entry}{%
-    \ifglsused{\@glo@entry}{}{%
-     \glsaddnp[#1]{\@glo@entry}}}%
-}
+
+\@ifundefined{glsaddallunused}{
+  %% new code; modified \glsaddall
+  \newcommand{\glsaddallunused}[1][]{%
+    \edef\@glo@type{\@glo@types}%
+    \setkeys{glossadd}{#1}%
+    \forallglsentries[\@glo@type]{\@glo@entry}{%
+      \ifglsused{\@glo@entry}{}{%
+       \glsaddnp[#1]{\@glo@entry}}}%
+  }
+}{}
 \makeatother
 
 
