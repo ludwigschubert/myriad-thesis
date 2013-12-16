@@ -61,35 +61,27 @@ In order to determine which aspects of the requirements are best handled by user
 The steps of one iteration of this model are explained below. It is assumes that the user has sent out a mailmerge to a list of recipients at the beginning of the campaign.
 
 \textbf{Incoming Emails}
-
 The user receives replies from his recipients, which need to be separated from his non-campaign related emails. This can and should be automated.
 
 \textbf{\emph{Extract}}
-
 The data within the replies needs to be extracted and categorized to be actionable. A user will initially want to define a data scheme, but then assistants or NLP algorithms can take over the work of actually extracting the email's data into this scheme.
 
 \textbf{Schematic Data}
-
 The extracted data needs to be stored in a way that it enables the user to use it both for himself and to drive further the email campaign from which they originated.
 
 \textbf{\emph{Select}}
-
 Based on the extracted data, the user needs to select subgroups of the recipients to send the next message to. This needs to be done by the user, as this step decides on the actual content of the campaign, but, since the system knows the history and content of the campaign, can be aided by automated suggestions on reusing existing messages.
 
 \textbf{Message Templates}
-
 The system needs to allow creation of message templates, as well as store a pre created set of them for reuse. The templating system needs to provide capabilities to make message templates fully reusable across different recipients.
 
 \textbf{\emph{Personalize}}
-
 When a message template has been chosen or created for a certain group of recipients, the system uses the extracted data and context information to personalize the message, such as resolving placeholders or adding the conversation history at the end of the message.
 
 \textbf{Outgoing Emails}
-
 The system creates individual, personalized emails for every recipient. It should not use BCC’ing or multiple adressees, as this would have a negative impact on the perceived personalization.
 
 \textbf{\emph{Review}}
-
 In order to guarantee conversation continuity, outgoing emails should be checked both for internal consistency after placeholder resolving and consistency within the context of the conversation. This can be done by assistants, as it doesn’t require domain knowledge.
 
 \subsection{Prototyping Approaches}
@@ -115,9 +107,46 @@ These paper protoypes were then converted to full resolution clickable protypes 
 
 \insertfigure{figures/wireframe_match.pdf}{An ``activity stream'' kind of view, which shows new automation matches.}{wireframe_match}{.8}{Own illustration}
 
-% \section{Product Functions}
-% TODO List of product functions? use case diagram?
+\section{Product Functions}
 
+From tester evaluation of those prototypes a first list of product features was extracted. It was intentionally kept small to specify only the \acrfull{mvp}, only including placeholders for contact names, and no data extraction, spreadsheet syncing or review capabilities.
+
+\fbox{\parbox{\textwidth}{
+  \begin{enumerate}
+    \setlength{\itemsep}{1pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}
+    
+    \item Login with OAuth
+    \item Create Campaign
+    \item Create Template
+    \begin{enumerate}
+      \item Insert Placeholders
+    \end{enumerate}
+    \item Send Emails
+    \begin{enumerate}
+      \item Reuse Template
+      \item Parse list of Contacts from To: field
+      \item Prevent same Template being sent twice
+    \end{enumerate}
+    \item Fetch Replys from Gmail
+    \item View Emails by Conversation
+    \begin{enumerate}
+      \item View Conversation State
+      \item Reply in Conversation
+      \begin{enumerate}
+        \item Create Template from Reply
+      \end{enumerate}
+    \end{enumerate}
+  \end{enumerate}
+}}
+
+\insertfigure{figures/usecases.pdf}{For readability, transitive ``uses'' edges are assumed implicitly. Also, the user is the actor for all use cases -- only the three nearest have been connected.}{usecases}{1}{Own illustration}
+
+While very crude, this list enabled us to build a working prototype in only a couple man days. Further product features were then based on elicited tester and user feedback, not on explicit specification. Since often use cases were developed after observed usage scenarios, we found little value in a proper specification -- the working scenario was proof of the correct implementation. Instead, we focused our modeling efforts on an area were it was harder to express our ideas: the actual workflow of the system. Together with Christian Ikas I modeled a best-case workflow through all stages of the process, involving assistants where feasible. (\autoref{fig:workflow1} on pages \pageref{fig:workflow1}--\pageref{fig:workflow2})
+
+\insertfigure{figures/workflow1.pdf}{Continued on next page}{fig:workflow1}{1}{Own illustration with Christian Ikas}
+\insertfigure{figures/workflow2.pdf}{}{fig:workflow2}{1}{Own illustration with Christian Ikas}
 
 \subsection{Interoperability}
 
@@ -134,10 +163,7 @@ Myriad doesn't require users to store their data in a special database or on a M
 
 In certain scenarios a user doesn't take issue with recipients knowing that they are collecting information from a big number of people. In such a situation we received a request for embedding forms, that would input data directly into Myriad’s database. Relying on a spreadsheet as a data source made this trivial, as Google Docs provides HTML forms which we could integrate directly.
 
-
-%\section{User Interface}
-% TODO Screenshots and walkthrough?
-%
+% \section{User Interface}
 
 % \section{Technical Analysis}
 % % TODO Technical Analysis
