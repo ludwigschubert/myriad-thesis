@@ -34,7 +34,7 @@ Based on the identified shortcomings of current software in the context of \gls{
 
 \item[Perceived Personalization:] Messages created by the system should be indistinguishable from ones typed manually by the user. Generated messages are required to achieve resemblance to human authored messages in \emph{form}, given human authored \emph{content}.
 
-\item[Message Reusability:] Reusing past messages, decisions and actions is the key to higher performance and must be at the heart of the system. If not entirely automated, the system should store past messages and actively suggest them for reuse when appropriate.
+\item[Message Reusability:] Reusing past messages, decisions and actions is the key to higher performance and must be at the heart of the system. The system should store past messages and actively suggest them for reuse when appropriate.
 
 \item[Automation:] Informational objects - such as contacts and messages - should be handled without further user intervention whenever possible. Automation rules should be easy to setup and monitor. Automation may never result in breaking the continuity of the conversation or generally doubting the personal origin of the received message.
 
@@ -53,43 +53,42 @@ In addition to lifting these limitations, the following requirement was added to
 \end{description}
 
 \subsection{The ``Myriad'' Model of \gls{abmc}}
-
 From the beginning of the project it felt natural to not only develop a tool for single users, but for collaborative usage, where users and assistants would take over roles that could not easily be automated, mirroring the roles secreterial assistants usually assume as described by \citet{Erickson2008a}.
 In order to determine which aspects of the requirements are best handled by users, an automated system, or human assistants, a model of the process steps involved, and artifacts generated in \gls{abmc} was created.
 
 \insertfigure{figures/myriad_model.pdf}{The Myriad Model decomposes ABMC into distinct substeps to allocate them to different actors.}{Myriad-Model}{1}{Own illustration}
 
-The steps of one iteration of the model are given below. We assume that the user has initially sent out a mailmerge mass email to a list of recipients at the beginning of the campaign.
+The steps of one iteration of this model are explained below. It is assumes that the user has sent out a mailmerge to a list of recipients at the beginning of the campaign.
 
-\subsubsection*{Incoming Emails}
+\textbf{Incoming Emails}
 
 The user receives replies from his recipients, which need to be separated from his non-campaign related emails. This can and should be automated.
 
-\subsubsection*{\emph{Extract}}
+\textbf{\emph{Extract}}
 
 The data within the replies needs to be extracted and categorized to be actionable. A user will initially want to define a data scheme, but then assistants or NLP algorithms can take over the work of actually extracting the email's data into this scheme.
 
-\subsubsection*{Schematic Data}
+\textbf{Schematic Data}
 
 The extracted data needs to be stored in a way that it enables the user to use it both for himself and to drive further the email campaign from which they originated.
 
-\subsubsection*{\emph{Select}}
+\textbf{\emph{Select}}
 
 Based on the extracted data, the user needs to select subgroups of the recipients to send the next message to. This needs to be done by the user, as this step decides on the actual content of the campaign, but, since the system knows the history and content of the campaign, can be aided by automated suggestions on reusing existing messages.
 
-\subsubsection*{Message Templates}
+\textbf{Message Templates}
 
 The system needs to allow creation of message templates, as well as store a pre created set of them for reuse. The templating system needs to provide capabilities to make message templates fully reusable across different recipients.
 
-\subsubsection*{\emph{Personalize}}
+\textbf{\emph{Personalize}}
 
 When a message template has been chosen or created for a certain group of recipients, the system uses the extracted data and context information to personalize the message, such as resolving placeholders or adding the conversation history at the end of the message.
 
-\subsubsection*{Outgoing Emails}
+\textbf{Outgoing Emails}
 
 The system creates individual, personalized emails for every recipient. It should not use BCC’ing or multiple adressees, as this would have a negative impact on the perceived personalization.
 
-\subsubsection*{\emph{Review}}
+\textbf{\emph{Review}}
 
 In order to guarantee conversation continuity, outgoing emails should be checked both for internal consistency after placeholder resolving and consistency within the context of the conversation. This can be done by assistants, as it doesn’t require domain knowledge.
 
@@ -97,7 +96,6 @@ In order to guarantee conversation continuity, outgoing emails should be checked
 
 During the prototyping phase I created lots of wireframes that were then used in paper prototyping.
 The first four screen that were considered focused on placeholders (\autoref{pp_placeholders}), template creation(\autoref{pp_templates}), status visualization(\autoref{pp_status}), and message reuse(\autoref{pp_reuse}).
-
 
 \insertfigure{figures/paper_prototype_1.pdf}{Using placeholders.}{pp_placeholders}{.8}{Own illustration}
 
@@ -125,9 +123,7 @@ These paper protoypes were then converted to full resolution clickable protypes 
 
 Users tend to resist changing their habits when it comes to software usage, thus it seem desirable to enable users to stick with their familiar software and user interfaces as long as possible. Combining general purpose tools into specific workflows is a design principle that has proven itself countless times, such as within unix’s shells, spreadsheet applications, or file managers.
 Three specific instances where interoperability with general purpose tools was chosen over a proprietary implementation in the myriad prototype are listed below.
-
 \subsubsection{Google Mail}
-
 To allow users to change their existing workflow as little as possible, Gmail labels were integrated with Myriad. A user can keep his primary workflow in his personal email client, while only labeling specific emails. Those are automatically imported into Myriad and can then be processed either by automated rules or with the help of an assistant. Rules built into Gmail even allow for fully automated labelling through Gmail’s filters, a rule system that a user might already be familiar with.
 
 \subsubsection{Google Docs Spreadsheets}
@@ -143,34 +139,36 @@ In certain scenarios a user doesn't take issue with recipients knowing that they
 % TODO Screenshots and walkthrough?
 %
 
-\section{Technical Analysis}
-% TODO Technical Analysis
-
-\subsection{Runtime Environment}
-
-\subsection{Server Software Stack}
-
-\subsection{Client Side}
-
-\subsection{Interoperability}
-
-
-\subsubsection{Google Mail}
-
-
-\subsubsection{Google Docs Spreadsheets}
-
-
-\subsubsection{Google Docs Forms}
-
-The integration with Google Docs Forms comes almost for free with spreadsheet sync -- since a user can configure a form to append new entries to a spreadsheet, the user can simply sync this spreadsheet to Myriad and the data becomes available.
-Google doesn't offer an API that could be used to register for changes in a spreadsheet, so a simple polling functionality was included, which checks for changed data every 15 minutes. Thus, in interaction with Automation, Myriad can react to a new form submission form without further user interaction.
+% \section{Technical Analysis}
+% % TODO Technical Analysis
+%
+% \subsection{Runtime Environment}
+%
+% \subsection{Server Software Stack}
+%
+% \subsection{Client Side}
+%
+% \subsection{Interoperability}
+%
+%
+% \subsubsection{Google Mail}
+%
+%
+% \subsubsection{Google Docs Spreadsheets}
+%
+%
+% \subsubsection{Google Docs Forms}
+%
+% The integration with Google Docs Forms comes almost for free with spreadsheet sync -- since a user can configure a form to append new entries to a spreadsheet, the user can simply sync this spreadsheet to Myriad and the data becomes available.
+% Google doesn't offer an API that could be used to register for changes in a spreadsheet, so a simple polling functionality was included, which checks for changed data every 15 minutes. Thus, in interaction with Automation, Myriad can react to a new form submission form without further user interaction.
 
 \section{System Design}
 
 This section presents the results of iteration on both data modeling and deployment strategies. While here only the final state is presented, in \autoref{chapter:Implementation} and \autoref{chapter:UMLDiagrams} the evolution of these aspects of the system design is explored further. Also, the interaction between the core data model classes is explained in detail in \autoref{sec:Architecture}, while here I focus merely on the contained data.
 
-%\subsection{Data Modelling}
+%\subsection{Data Modeling}
+
+% TODO: Data Modeling?
 
 \subsection{System Deployment}
 

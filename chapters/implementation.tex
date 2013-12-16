@@ -5,28 +5,30 @@ This chapter is concerned with technical details of how Myriad was implemented. 
 
 \section{Preparation and Tools}
 
-% TODO Implementations Preparation, collab Development, deployment
+This section is concerned with the development environment, it's peculiarities, and how the need for collaborative development on heterogeneous development platforms drove standardization and automation in the development process.
 
 \subsection{Development Environment}
 
+Due to our collaborative development efforts, our project needed to run on a current version of Windows 7, the latest long time support version of Ubuntu 12.04 and on two different versions of Mac OS X; 10.7 Lion and 10.8 Mountain Lion. Consequently we knew we wouldn't be able to standardize on a single \gls{ide}. Instead, we chose to use the best native tools available for each platform and learn about the different ways of developing \gls{ror} projects on our respective platforms.
 
+On OS X that meant we sometimes used the \gls{ide} RubyMine 5 from JetBrains\footnote{\url{http://www.jetbrains.com/ruby/}}, but usually stuck to the command line and a solid text editor. On both Ubuntu and OS X our choices were \gls{zsh} for the \gls{cli} and terminal \gls{vim} as an editor. We occasionally switched to Sublime for its project-wide find and replace feature. On Windows Notepad+ was used.
 
-\subsection{Collaborative Development}
+The project was set up as a new \gls{ror} 3.2 project. We used \gls{rvm} to isolate both the development version of \gls{ruby} 1.9.2 and our Gemset from our system versions. This guaranteed that we used the same binaries on all three platforms. Additionally I wrote startup scripts that inspect their environment and start essential services such as \gls{redis} differently, depending on which platform they are run. While we did run into some compatibility issues during this process, each of those occurences taught us to specify our dependencies even more precisely, or document implicit expectations explicitly.
 
+For testing purposes we set up both a staging and a production server, with scripts to quickly import the production database to either the staging server or the development machine.
 
+\subsection{Collaborative Development with \code{git}, \code{gitflow} and Github}
 
-\subsubsection{\code{git}, \code{gitflow} and Github}
+A private \gls{git} repository was created on Github, with push access for all team members. We set our main git branch to ``develop'' and followed git flow practices: a new feature is developed on a branch prefixed with ``feature/''. During development udpdates from ``develop'' may be merged into it. On completion we would merge the changes back into ``develop''. When we wanted to release a version, we'd create a branch prefixed with ``release/''. Once ready, this was merged into master and tagged with a release number. We also used ``hotfix/'' branches for immediate bug fixes, which were later merged into ``develop''. While this proposed branch structure looks overwhelming at first, it was well suited to capture the processes of developing a live software system. This manifested itself when we realized we voluntarily used every of the proposed branch prefixes.
 
+Github's pull requests were used on completion of a ``feature/'' branch. The developer that had finished and tested their feature we would open a pull request on Github, where other developers would look at the code. It was common to do line-by-line pair reviews of critical code sections. This aided in forming a shared understanding of the codebase, a uniform nomenclature, and sharing knowledge of development practices.
 
+\insertfigure{figures/gitflow.pdf}{A successful Git branching model called ``git flow''}{gitflow}{1}{Vincent Driessen, \url{http://nvie.com/posts/a-successful-git-branching-model/}}
 
-\subsection{Deployment}
+\subsection{Deployment with \code{Capistrano}}
 \label{subsection:Deployment}
 
-
-
-\subsubsection{Deployment Tool \code{Capistrano}}
-
-
+For deployment automation we used the deployment automation tool Capistrano 2 with the multi-stage extension that adds support for, e.g., a staging and a production environment. We had originally deployed our code by following a twelve step list in a text file we had received from the original server maintainer. While this pre-existing server system didn't allow us to use some of the nice built-in features of Capistrano such as automatic roll-back on a failed deploy, I managed to convert the list into a set of capistrano tasks. Once finished every developer could deploy from their machine simply by typing |cap production deploy| or |cap staging deploy|. The deployment included advanced features such as creating a \gls{cron} file from a more readable \gls{ruby} \gls{dsl}, and symlinked configuration files to enable keeping all often-changed configuration files checked into the repository.
 
 \section{Architecture}
 \label{sec:Architecture}
@@ -137,15 +139,15 @@ Myriad does a lot of work ``behind-the-scenes'', when users are not actively usi
 
 \item[CampaignLabelCreator] Used to create a label in Google Docs when a new Campaign is created. Internally it uses the LabelSetter class, just like MessageLabelSetter. By using this shared class both workers guarantee the existence of a top-level ``Myriad'' label so campaign labels don't clutter up the user's inbox.
 
-\item[IDFetcher] Used to fetch Email UID and THRID from Gmail for a known Message ID. Internally it uses the Fetcher class, like MessageFetcher. The THRID can then later be used to fetch a complete ``thread'' from Gmail.
+\item[IDFetcher] Used to fetch email UID and THRID from Gmail for a known Message ID. Internally it uses the Fetcher class, like MessageFetcher. The THRID can then later be used to fetch a complete ``thread'' from Gmail.
 
-\item[MessageFetcher] This fetches all relevant Emails from Gmail to Myriad. First, it gets all replies to messages Myriad has created itself by searching for their Message ID in the in-reply-to Header field. Second, it gets all Emails from threads in which there are Emails from Myriad. It uses the fetched THRID to search for messages in the same thread. Lastly, it gets all Emails that were manually labeled by searching for the known label names that were created when the campaign was created.
+\item[MessageFetcher] This fetches all relevant emails from Gmail to Myriad. First, it gets all replies to messages Myriad has created itself by searching for their Message ID in the in-reply-to Header field. Second, it gets all Emails from threads in which there are Emails from Myriad. It uses the fetched THRID to search for messages in the same thread. Lastly, it gets all Emails that were manually labeled by searching for the known label names that were created when the campaign was created.
 
-\item[MessageLabelSetter] Uses LabelSetter to set a Gmail label for a single Email. This is done whenever new Emails are fetched from Gmail. In Gmails UI it appears as if labels were set for whole threads, when in reality the thread view simply displays the sum of all labels in the thread. Since threads can be split (for example if one conversation partner changes the subject of their Email) we proactively label all messages in a thread with their respective Myriad Campaign label, so we don't forget them should their thread be split in the future.
+\item[MessageLabelSetter] Uses LabelSetter to set a Gmail label for a single email. This is done whenever new emails are fetched from Gmail. In Gmails UI it appears as if labels were set for whole threads, when in reality the thread view simply displays the sum of all labels in the thread. Since threads can be split (for example if one conversation partner changes the subject of their email) we proactively label all messages in a thread with their respective Myriad Campaign label, so we don't forget them should their thread be split in the future.
 
-\item[MessageSender] Seemingly the simplest worker, it actually performs many checks before sending an email via SMTP: It checks for prior SendingErrorNotifications and makes sure there are actually emails to send for the user it was asked to operate on. Then it iterates over the set of unsent messages, acquiring a database row lock during the sending process; ensuring an Email is still unsent after acquiring the lock, and finally sending the Email. After relinquishing the row lock it performs additional bookkeeping operations, such as clearing up any SendingErrorNotifications for this user.
+\item[MessageSender] Seemingly the simplest worker, it actually performs many checks before sending an email via SMTP: It checks for prior SendingErrorNotifications and makes sure there are actually emails to send for the user it was asked to operate on. Then it iterates over the set of unsent messages, acquiring a database row lock during the sending process; ensuring an email is still unsent after acquiring the lock, and finally sending the email. After relinquishing the row lock, it performs additional bookkeeping operations, such as clearing up any SendingErrorNotifications for this user.
 
-\item[SpreadsheetContactAdder] After a new Conversation is created -- which happens during importing of new Emails from new Contacts to an existing campaign -- its user is added as a row to the spreadsheet used as a datastore.
+\item[SpreadsheetContactAdder] After a new Conversation is created -- which happens during importing of new emails from new Contacts to an existing campaign -- its user is added as a row to the spreadsheet used as a datastore.
 
 \item[SpreadsheetSyncer] Makes sure Myriad's minimum set of spreadsheet headers is available, and then tries to parse Contacts from these. For rows where this process was succesful, Myriad then tries to read in all Key-Value pairs of this row. If during the process new Contacts or Keys are discovered, they are created in the system.
 

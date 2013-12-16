@@ -64,6 +64,8 @@ This command generates a \emph{model class} |User| with a field |name| of type |
 
 \subsection{Components of \acrlong{ror}}
 
+\insertfigure{figures/rails_architecture.png}{Ruby on Rails Architecture Diagram}{RailsArchitecture}{.75}{Picasa User ``Niwatori''}
+
 \gls{ror} is built in a modular fashion, where each component has clear uses and responsibilities.
 An incoming request from a client is forwarded via the web server to the |dispatcher| or \emph{router}. The dispatcher is configurable via the |routes| file, which contains a \gls{dsl} for routing requests to their respective |controller|s. These have |action|s, which trigger rendering, delegation, mail delivery or redirecting behaviors. Inside the |action|s, controllers have access to ActiveRecord for \gls{crud} operations on data. Inside the views, the rendering engine has access to ActionView Helper methods, such as url creation and value transformation methods.
 
@@ -98,7 +100,7 @@ end
 \label{tab:resources}
 \end{table}
 
-\gls{ror}'s development web server |WEBRick| runs on port 3000 by default, so assuming a developer will point his web browser at \url{http://localhost:3000/users} the dispatcher will recognize this GET request as a valid route -- the first, bold, one in \autoref{resources}.
+\gls{ror}'s development web server |WEBRick| runs on port 3000 by default, so assuming a developer will point his web browser at \url{http://localhost:3000/users} the dispatcher will recognize this GET request as a valid route -- the first, bold, one in \autoref{tab:resources}.
 It will then continue to load and dispatch the request to a controller named |UsersController| -- once again, \gls{coc} inferring the controller name from the resource, and how to autoload it from convention on where in the app directory it is defined -- on the |index| action. Now while scaffolding generated a UsersController and an index action for us, the action contains just one line:
 
 \begin{lstlisting}[escapechar=!]
@@ -109,9 +111,7 @@ It will then continue to load and dispatch the request to a controller named |Us
 
 However, in the browser a list of users is displayed. What happens here is that by convention the controller looks for a view named after the current action and renders it implicitly. This view has access to the |@users| variable defined in the controller and is thus able to render the requested page.
 
-This process requires developers to get to know a lot of assumptions, but saves from writing a lot of boilerplate code over and over again. In fact, there's a quite popular \gls{gem} called ``CanCan'' which introduces a controller macro called |load\_resource|. When this macro is included in the top level Controller class, ApplicationController, common ActiveRecord database fetches like the scaffolded \lstinline{@users = User.all} are automated entirely, so the controller methods are effectively empty. While most applications obviously need more logic to be interesting, this is an interesting experiment to see just how far \gls{coc} can be pushed.
-
-\insertfigure{figures/rails_architecture.png}{Ruby on Rails Architecture Diagram}{RailsArchitecture}{.75}{Picasa User ``Niwatori''}
+This process requires developers to get to know a lot of assumptions, but saves from writing a lot of boilerplate code over and over again. In fact, there's a quite popular \gls{gem} called ``CanCan'' which introduces a controller macro called |load_resource|. When this macro is included in the top level Controller class, ApplicationController, common ActiveRecord database fetches like the scaffolded \lstinline{@users = User.all} are automated entirely, so the controller methods are effectively empty. While most applications obviously need more logic to be interesting, this is an interesting experiment to show just how far \acrlong{coc} can be pushed.
 
 \section{Email}
 
