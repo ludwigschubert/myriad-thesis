@@ -5,7 +5,7 @@ This chapter is concerned with technical details of how Myriad was implemented. 
 
 \section{Preparation and Tools}
 
-
+% TODO Implementations Preparation, collab Development, deployment
 
 \subsection{Development Environment}
 
@@ -28,53 +28,6 @@ This chapter is concerned with technical details of how Myriad was implemented. 
 
 
 
-
-\section{Server Component}
-
-
-\subsection{Workers and their Jobs}
-
-Myriad does a lot of work ``behind-the-scenes'', when users are not actively using the system through their browsers. An array of background workers and tasks was created to tackle this challenge:
-
-
-As we spent a lot of time figuring out the intricacies of the Gmail IMAP implementation and the manifold cases that can occur when normal (or heavy) users go about their daily email business without considering the restrictions of poor Myriad, we want to spare you repeating the same. We hope to have brought the fetching and email creation logic to a relatively stable state, yet we are certain there remain a bunch of holes that could cause failures in edge cases.
-If you do not need to touch the code, you might find the following explanation too detailed, so you shouldn't waste your time with it (bar this overview section). For anybody working with the fetching code, however, the following information should prove very useful - especially if you are unfamiliar with email headers, IMAP protocol details and the like.
-In brief, our fetching process works as follows:
-1.	Identifying emails on the Gmail server: First, we connect to the user's Gmail account and identify the UIDs (one of many types of email identifiers, see below for a more detailed explanation) of all emails we want to fetch. We use multiple different queries for that, which will later be explained in more detail. Before we move on to the next step, we filter out emails in our database whose UIDs we already know, i.e. have fetched before.
-2.	Fetching and processing email data: For the remaining UIDs, we fetch the corresponding email from Gmail, create a Mail object (from the mail gem) for it and determine its type – IncomingFetchedEmail, OutgoingFetchedEmail, etc.
-3.	Email creation in Myriad: As a last (but not trivial) step we try to use the information from the Mail object to create an Email object in Myriad.
-
-
-\subsection{Maintenance and Rake Tasks}
-
-\section{rake db:validate}
-
-We had to perform a big number\footnote{\lstinline{cd ~/myriad/db/migrations && ls -l | awk '!/^d/\{print \}' | wc -l} returns 82 migrations.} of database migrations while already handling live tester's data. This data included our professor's emails, so I searched for a way to ensure our migrations and code changes would not create database records that would be considered invalid by the changed validation code, a problem that's not usually detected during a migration and will lead to hard-to-debug problems during usage. The solution we built is a rake task called ``db:validate''. It dynamically discovers all \gls{activerecord} classes and runs their validations on them. As part of the test suite it would be run against a copy of the production database before deploying a new release. While the actual class got more complicated to account for exceptional validation behavior, progress indication, and interactive deletion capabilities, the original formulation is still intriguingly simple.
-
-\begin{lstlisting}
-  def invalid_records
-    classes = ActiveRecord::Base.descendants
-    classes.flat_map{ |class| class.all.reject(&:valid?) }
-  end
-\end{lstlisting}
-
-\section{rake backup:db \& rake backup:attachments}
-
-Since we were working on live data we automatically created a backup of the database and external message attachments before every deploy using these two rake tasks.
-
-\section{rake fetch:...}
-
-The |fetch| tasks included debug tools for every switch we made in how we fetched emails from Google. Since after such a change we had to ``migrate'' our database to the new expectations about which messages were fetched, we used these tasks to do so. All of them were written to be idempotent so we could also run them again and look at log outputs for debugging reasons.
-
-\section{rake idle}
-
-The IMAP IDLE background task was also created as a rake task, since it would need access to the database's user information. It contains a while true loop that checks and restarts child processes for opening an IMAP connection for every user, and restarting them when they got closed.
-
-\section{rake resque:...}
-
-Contains a collection of scripts that setup, start, and restart the resque service for background workers.
-
-\pagebreak
 \section{Architecture}
 \label{sec:Architecture}
 
@@ -83,7 +36,7 @@ Myriad is built around the interaction of five model level concepts, implemented
 
 The shown class diagrams follow a subset of the UML 2.0 class diagram standard\cite{uml}. Since these diagrams are primarily focussed on Myriad's data model, they are first and foremost Entity Relationship diagrams. They are simplified for illustrative purposes and do not constitute an exact specification.
 
-\insertfigure{figures/cd_main.pdf}{Myriad is built around the interaction of 5 model level classes.}{CD-Main}{1}
+\insertfigure{figures/cd_main.pdf}{Myriad is built around the interaction of 5 model level classes.}{CD-Main}{1}{Own illustration}
 
 
 \subsection{Contact}
@@ -99,33 +52,35 @@ Templates are prototypes of emails. They consist of body text that can contain p
 
 Emails are instantiations of Templates. Their body doesn’t contain placeholders anymore, but only the merged email body. They have a delivery status, for example, and keep lots of information on their external representations, like a \code{message\_id}, UIDs for IMAP folders, thread IDs (THRIDs) for Gmail, etc.
 
-\subsubsection{FetchedEmail}
+\insertfigure{figures/cd_emails.pdf}{Email subclasses express the $2^2$ possible combinations of Created $\leftrightarrow$ Fetched and Incoming $\leftrightarrow$ Outgoing.}{CD-Main}{1}{Own illustration}
+
+\textbf{FetchedEmail}
 
 |FetchedEmail| represents Emails that were fetched as raw data from an IMAP server. |FetchedEmail|s encapsulate their respective |RawMail|s.
 
-\subsubsection{IncomingFetchedEmail}
+\textbf{IncomingFetchedEmail}
 
 |IncomingFetchedEmail| represents an email from someone else than the user that was fetched from an IMAP server. E.g.: responses from recipients.
 
-\subsubsection{OutgoingFetchedEmail}
+\textbf{OutgoingFetchedEmail}
 
 |OutgoingFetchedEmail| represents an email the user wrote themselves, but that was fetched from an IMAP server. E.g.: Emails the user wrote in their personal email client, but still in response to recipients of a current campaign.
 
-\subsubsection{CreatedEmail}
+\textbf{CreatedEmail}
 
 |CreatedEmail| represents Emails that were created by Myriad. They don't have a |Rawmail|, but |CreatedEmail| provides functionality for serializing to a raw text representation for sending.
 
-\subsubsection{OutgoingCreatedEmail}
+\textbf{OutgoingCreatedEmail}
 
 |OutgoingCreatedEmail| represents an email the user wrote as a message template and was later generated and usually sent by Myriad.
 
-\subsubsection{IncomingCreatedEmail}
+\textbf{IncomingCreatedEmail}
 
 While, at first sight, it might seem like an \emph{incoming} email could never be \emph{created} by the system, this could be used for a multitude of plausible scenarios, such as sending persistent messages to the user (instead of the more ephemeral on-screen notifications), importing emails from a non \code{IMAP} compatible email server, or even integrating chat systems, making incoming chat messages appear as emails to the system.
 
 \subsection{Campaign}
 
-Campaigns are a collection of templates and meta information like a connected Google Drive spreadsheet. They additionally contain a list of Keys, which are described later. One can think of keys as the column headers of the synced spreadsheet.
+Campaigns are a collection of templates and meta information like a connected Google Drive spreadsheet. They additionally contain a list of Keys, which are described later. One can think of keys as the column headers of the synced spreadsheet. Creating a new campaign creates a label with the same name in the user's inbox, allowing them to import messages manually into the Myriad campaign should the need arise.
 
 \subsection{Conversation}
 
@@ -133,43 +88,101 @@ Conversations are like email threads in gmail, but scoped to a specific campaign
 
 \subsection{Key \& Value}
 
-\insertfigure{figures/cd_key_value.pdf}{Key and Value together allow for storing arbitrary information about a contact in a campaign.}{CD-Key-Values}{1}
+\insertfigure{figures/cd_key_value.pdf}{Key and Value together allow for storing arbitrary information about a contact in a campaign.}{CD-Key-Values}{1}{Own illustration}
 
 One goal of a campaign can be the collection of information. To achieve this, users create a data schema made up of Keys, that they -- or one of the assistants they share the campaign with -- fills with Contact-specific Values. The Keys are a name – the header of the spreadsheet column. Values have a content – the content of a spreadsheet cell in the row of the contact they belong to.
-\pagebreak
+
 \subsection{Rules \& KeyBinding}
 
-\insertfigure{figures/cd_rules.pdf}{Rules rely on different ``bindings'' to define their matching criteria.}{CD-Rules}{1}
+\insertfigure{figures/cd_rules.pdf}{Rules rely on different ``bindings'' to define their matching criteria.}{CD-Rules}{1}{Own illustration}
 
-Searches allow users to constrain the set of all conversations to a subset of them by defining criteria those conversations match. Each search consists of zero or more KeyBindings, zero or more TemplateBindings, as well as an optional conversation status constraint. A KeyBinding is a value that a key must have to satisfy a specific search. Similarly, a TemplateBinding tb of search s specifies a Template t such that a conversation c matches s if c contains an email e, and e is an instantiation of t.
+Searches allow users to constrain the set of all conversations to a subset by defining certain criteria those conversations have to match. Each search consists of zero or more KeyBindings, zero or more TemplateBindings, as well as an optional conversation status constraint. A KeyBinding is a value that a conversations value for the respective key must have to satisfy a specific search. Similarly, a TemplateBinding |TB| of search |S| specifies a Template |T| such that a conversation |C| matches |S| iff |C| contains an email |E|, and |E| is an instantiation of |T|: $$ TB_S \Rightarrow \exists \: T_{Template}, \: C_{Conversation} \: \: . \: \: M(C,S) \Leftrightarrow \exists \: E_{Email} \:\: . \:\: E \subseteq C \land T(E,T) $$  With $M(C,S)$ defined as Conversation $C$ matches Search $S$, $T(E,T)$ defined as Email $E$ being an instantiation of Template $T$.
+
 For example, a search might specify that a conversation should be unread to be part of the search’s results. But we also want to allow users to specify constraints on their own Keys, e.g. coming? = ``yes''. For that, we needed a flexible way to specify those constraints. So we came up with the concept of a KeyBinding; it ``binds the free Key variable to a specific value''. So a KeyBinding associates a search with a Key that contains a specific value.
+
 Searches are saved to the database. If they specify a template to be sent, we consider them to be ``Rules'' that can be automatically triggered. This persisting of searches is also used to remember recent searches.
 
-\pagebreak
 \subsection{ValueSettingActions}
 
 When a |ValueSettingAction| is attached to a |Template|, and the Template is used to generate an |Email|, the |ValueSettingAction| is triggered. These actions can be used to change an arbitrary key's value to a specified value, after which rules are evaluated again.
 
-\insertfigure{figures/cd_actions.pdf}{ValueSettingActions allow a template to set a certain Key's value to a predefined value. Together with Rules, this allows for custom, state-machine-like behavior specification.}{CD-Actions}{1}
+\insertfigure{figures/cd_actions.pdf}{ValueSettingActions allow a template to set a certain Key's value to a predefined value. Together with Rules, this allows for custom, state-machine-like behavior specification.}{CD-Actions}{1}{Own illustration}
 
-\subsection{Notification}
+\subsection{Notifications}
 
 Notifications are used to ``notify'' users, but they can also hold state that can be used internally by the system. For example, when a user's credentials were rejected by Google, an InvalidCredentials Notification is attached to this user. The system checks for these when syncing Emails and knows to avoid users with invalid credentials. At the same time the notification is persistently shown to the user so they are made aware of the problem. Notifications are like state descriptors that can be attached to other objects.
 
-Notifications themselves are an abstract class which contains a polymorphic Type field, and an ID. We use this information to attach Notifications to any ActiveRecord object in our database. There is a whole class hierarchy beneath Notification, containing classes like |ErrorNotification|, which uses the aforementioned feature to attach errors or warnings to resources. There are also very specific subclasses like |TemplateSentToSearchResultsActivityNotification|, which are used to notify users. Another example would be a |SpreadsheetSyncingNotification|, which is also used to inform users. Groups of Notification Subclasses are defined, which are then displayed in different parts of the UI, for example on the Admin Dashboard or on top of the screen for the respective user. They act as a persistent ``notice'' as a message to users is usually called in \gls{ror}.
+Notifications themselves are an abstract class which contains a polymorphic Type field, and an ID. We use this information to attach Notifications to any ActiveRecord object in our database. There is a whole class hierarchy beneath Notification, containing classes like |ErrorNotification|, which uses the aforementioned feature to attach errors or warnings to resources. There are also very specific subclasses like |Template||SentToSearch||Results| |Activity||Notification|, which are used to notify users of automated actions taking place. Another example would be a |SpreadsheetSyncingNotification|, which is also used to inform users of the state of the system. Groups of Notification Subclasses are defined, which are then displayed in different parts of the UI. For example in the Admin Dashboard we display |UnexpectedStateNotification| as described in the next paragraph; or |SyncingNotifications| on top of the screen for the respective user. They act as a persistent ``notice'' to users.
 
-\subsubsection{UnexpectedStateNotification}
+\textbf{UnexpectedStateNotification}
 
 We used UnexpectedStateNotification as an alternative to an assert statement in production code. This allowed us to recover from non-critical errors, while still being made aware of where our code behaved unexpectedly. A good example where these really helped was spreadsheet syncing: we originally expected to have write access to a spreadsheet if a user's credentials were valid. Unfortunately Google Docs allows users to lose write access they had while creating the Myriad campaign. An |UnexpectedStateNotification| in the branch that handled authentication failure for spreadsheet syncing helped us discover this error.
 
-\subsubsection{ExceptionNotification}
+\textbf{ExceptionNotification}
 
 A simple way to save a runtime exception for review from the Admin Dashboard. |ExceptionNotification|s even include a stack trace to make debugging simpler without having to read through megabytes of logfiles.
 
-\subsubsection{ErrorNotification}
+\textbf{ErrorNotification}
 
 ErrorNotifications can be assigned to resources, but also have a resolve method. For example, we used |ErrorNotification|s to implement an |InvalidCredentialsErrorNotification| that is attached to a user if Google rejects their credentials. When, at a later point, the credentials work again, one can call |#resolve| on the |InvalidCredentialsErrorNotification|.
 Unfortunately we switched to also use them to notify not about an error, but simply about a state, for example a SpreadsheetSyncingNotification. Thus a future refactoring might rename them to PersistentNotification.
+
+\section{Additional Server Components}
+
+\subsection{Resque Workers and their Jobs}
+
+Myriad does a lot of work ``behind-the-scenes'', when users are not actively using the system through their browsers. An array of background workers and tasks was created to tackle this challenge:
+
+\begin{description}
+
+\item[CampaignLabelCreator] Used to create a label in Google Docs when a new Campaign is created. Internally it uses the LabelSetter class, just like MessageLabelSetter. By using this shared class both workers guarantee the existence of a top-level ``Myriad'' label so campaign labels don't clutter up the user's inbox.
+
+\item[IDFetcher] Used to fetch Email UID and THRID from Gmail for a known Message ID. Internally it uses the Fetcher class, like MessageFetcher. The THRID can then later be used to fetch a complete ``thread'' from Gmail.
+
+\item[MessageFetcher] This fetches all relevant Emails from Gmail to Myriad. First, it gets all replies to messages Myriad has created itself by searching for their Message ID in the in-reply-to Header field. Second, it gets all Emails from threads in which there are Emails from Myriad. It uses the fetched THRID to search for messages in the same thread. Lastly, it gets all Emails that were manually labeled by searching for the known label names that were created when the campaign was created.
+
+\item[MessageLabelSetter] Uses LabelSetter to set a Gmail label for a single Email. This is done whenever new Emails are fetched from Gmail. In Gmails UI it appears as if labels were set for whole threads, when in reality the thread view simply displays the sum of all labels in the thread. Since threads can be split (for example if one conversation partner changes the subject of their Email) we proactively label all messages in a thread with their respective Myriad Campaign label, so we don't forget them should their thread be split in the future.
+
+\item[MessageSender] Seemingly the simplest worker, it actually performs many checks before sending an email via SMTP: It checks for prior SendingErrorNotifications and makes sure there are actually emails to send for the user it was asked to operate on. Then it iterates over the set of unsent messages, acquiring a database row lock during the sending process; ensuring an Email is still unsent after acquiring the lock, and finally sending the Email. After relinquishing the row lock it performs additional bookkeeping operations, such as clearing up any SendingErrorNotifications for this user.
+
+\item[SpreadsheetContactAdder] After a new Conversation is created -- which happens during importing of new Emails from new Contacts to an existing campaign -- its user is added as a row to the spreadsheet used as a datastore.
+
+\item[SpreadsheetSyncer] Makes sure Myriad's minimum set of spreadsheet headers is available, and then tries to parse Contacts from these. For rows where this process was succesful, Myriad then tries to read in all Key-Value pairs of this row. If during the process new Contacts or Keys are discovered, they are created in the system.
+
+\item[SpreadsheetValueSetter] Tries to find the correct column and row for a contact and a key respectively. If successful, it sets the spreadsheet cell's value to a given value. If during the process a correct Key column is not found, it appends a column at the end of the spreadsheet.
+
+\end{description}
+
+\subsection{Maintenance and Rake Tasks}
+
+\subsubsection{rake db:validate}
+
+We had to perform a big number\footnote{\lstinline{cd ~/myriad/db/migrations && ls -l | awk '!/^d/\{print \}' | wc -l} returns 82 migrations.} of database migrations while already handling live tester's data. This data included our professor's emails, so I searched for a way to ensure our migrations and code changes would not create database records that would be considered invalid by the changed validation code, a problem that's not usually detected during a migration and will lead to hard-to-debug problems during usage. The solution we built is a rake task called ``db:validate''. It dynamically discovers all \gls{activerecord} classes and runs their validations on them. As part of the test suite it would be run against a copy of the production database before deploying a new release. While the actual class got more complicated to account for exceptional validation behavior, progress indication, and interactive deletion capabilities, the original formulation is still intriguingly simple.
+
+\begin{lstlisting}
+  def invalid_records
+    classes = ActiveRecord::Base.descendants
+    classes.flat_map{ |class| class.all.reject(&:valid?) }
+  end
+\end{lstlisting}
+
+\subsubsection{rake backup:db \& rake backup:attachments}
+
+Since we were working on live data we automatically created a backup of the database and external message attachments before every deploy using these two rake tasks.
+
+\subsubsection{rake fetch:...}
+
+The |fetch| tasks included debug tools for every switch we made in how we fetched emails from Google. Since after such a change we had to ``migrate'' our database to the new expectations about which messages were fetched, we used these tasks to do so. All of them were written to be idempotent so we could also run them again and look at log outputs for debugging reasons.
+
+\subsubsection{rake idle}
+
+The IMAP IDLE background task was also created as a rake task, since it would need access to the database's user information. It contains a while true loop that checks and restarts child processes for opening an IMAP connection for every user, and restarting them when they got closed.
+
+\subsubsection{rake resque:...}
+
+Contains a collection of scripts that setup, start, and restart the resque service for background workers.
+
+
 
 \section{``Interesting Practices''}
 
@@ -261,7 +274,7 @@ In our experience users often used ``First Name'' instead of ``first\_name'' and
 
 \item[uniq?] Checks whether all elements inside the receiving array are unique. This was not used to abuse |Array|s as |Set|s, but rather to check user input.
 
-\item[contains\_duplicates?] Semantic alias of |not uniq?|, this was the method that was actually used in code.
+\item[contains\_duplicates?] Semantic alias of |not uniq?|, this was the method that was actually used in code to ensure arrays of Keys to be unique, so a later lookup would return a non-ambiguous result.
 \\
 \begin{lstlisting}
   ['word', 'thing', 'word'].contains_duplicates?

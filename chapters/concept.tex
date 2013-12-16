@@ -144,6 +144,7 @@ In certain scenarios a user doesn't take issue with recipients knowing that they
 %
 
 \section{Technical Analysis}
+% TODO Technical Analysis
 
 \subsection{Runtime Environment}
 
@@ -173,9 +174,7 @@ This section presents the results of iteration on both data modeling and deploym
 
 \subsection{System Deployment}
 
-In \autoref{fig:deployment} the deployment and interaction of the different parts of the system is pictured. The Myriad server itself runs as a virtual machine on commodity hardware, so we had full control over the application environment during development. Automated deployment could be used to move the system to hosted servers for production. The client browser only interfaces with the \acrlong{ror} server via HTTP and \gls{ajax} to retrieve frontend webpages. An array of background services ensures the service continues to function even when the client is not logged in:
-
-For every client, an IMAP idle connection is held open to Google's Mail servers. If this connection receives notice of a new email, it triggers a background sync by enqueueing a Resque task. The service is monitored so the connection is restored if it closes at anytime.
+In \autoref{fig:deployment} the deployment and interaction of the different parts of the system is pictured. The Myriad server itself runs as a virtual machine on commodity hardware, so we had full control over the application environment during development. Automated deployment could be used to move the system to hosted servers for production. The client browser only interfaces with the \acrlong{ror} server via HTTP and \gls{ajax} to retrieve frontend webpages. An array of background services ensures the service continues to function even when the client is not logged in: For every client, an IMAP idle connection is held open to Google's Mail servers. If this connection receives notice of a new email, it triggers a background sync by enqueueing a Resque task. The service is monitored so the connection is restored if it closes at anytime.
 Sending Emails is also done through background jobs, so the user doesn't have to stay logged in during a potentially lengthy sending operation. A regular polling of the connected spreadsheets is also enqueued as background tasks. All tasks connect to the same database to transmit information. Row and table locks are used for synchronisation between tasks, and some custom bookkeeping logic optimizes task queues, to, for example, prevent checking the same email account for new mails directly after it has already been checked.
 
 OAuth is used for authentication with said Google Services. A centralized authentication service for all background tasks is used by storing OAuth tokens in the database, behind an interface that automatically checks the token's validity and requests newer tokens if they are needed.
